@@ -1,5 +1,5 @@
 from pygame.locals import *
-from V2.Component import *
+from Component import *
 
 GAME_EVENT = USEREVENT + 1
 OPTION_EVENT = USEREVENT + 2

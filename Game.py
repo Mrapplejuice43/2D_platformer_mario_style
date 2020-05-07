@@ -1,6 +1,6 @@
-from V2.Overlay import *
-from V2.Camera import *
-from V2.World import *
+from Overlay import *
+from Camera import *
+from World import *
 import numpy as np
 
 

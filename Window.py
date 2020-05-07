@@ -1,6 +1,6 @@
-from V2.Game import *
-from V2.World import *
-from V2.Overlay import *
+from Game import *
+from World import *
+from Overlay import *
 import numpy as np
 
 GAME_STATE = 0

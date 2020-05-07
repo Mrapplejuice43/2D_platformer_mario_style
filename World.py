@@ -1,6 +1,6 @@
-from V2.GameObjects import *
-from V2.Actors import *
-from V2.Camera import *
+from GameObjects import *
+from Actors import *
+from Camera import *
 
 
 class World:
