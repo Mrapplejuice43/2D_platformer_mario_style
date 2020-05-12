@@ -49,9 +49,9 @@ class Menu(Overlay):
             Button(self, 300, 100, r"assets\\testButton.png", QUIT, [50, 75], posType='percentFromCenter'),
             Button(self, 50, 50, r"assets\\testButton.png", BACK_EVENT, [95, 5], posType='percentFromCenter')
         )
-        self.components[0].addChild(Text(parent=self.components[0], content="Play"))
-        self.components[1].addChild(Text(parent=self.components[1], content="Editor"))
-        self.components[2].addChild(Text(parent=self.components[2], content="Quit"))
+        self.components[0].addChild(Text(parent=self.components[0], content="Play", centered=True))
+        self.components[1].addChild(Text(parent=self.components[1], content="Editor", centered=True))
+        self.components[2].addChild(Text(parent=self.components[2], content="Quit", centered=True))
 
 
 class PauseMenu(Overlay):
@@ -65,9 +65,9 @@ class PauseMenu(Overlay):
 
         )
 
-        self.components[1].addChild(Text(parent=self.components[1], content="1"))
-        self.components[2].addChild(Text(parent=self.components[2], content="2"))
-        self.components[3].addChild(Text(parent=self.components[3], content="Return to Menu"))
+        self.components[1].addChild(Text(parent=self.components[1], content="1", centered=True))
+        self.components[2].addChild(Text(parent=self.components[2], content="2", centered=True))
+        self.components[3].addChild(Text(parent=self.components[3], content="Return to Menu", centered=True))
 
 
 class EditorMenu(Overlay):

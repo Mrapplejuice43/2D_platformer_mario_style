@@ -76,9 +76,18 @@ class Text(Component):
         super().__init__(kwargs['parent'])
 
         self.content = pygame.font.SysFont("Consolas", 25).render(kwargs['content'], False, (255, 255, 255))
-        if isinstance(kwargs['parent'], Button):
-            self.pos = np.array(kwargs['parent'].pos) + (np.array(
-                (kwargs['parent'].width, kwargs['parent'].height)) - np.array(self.content.get_size())) // 2
+        self.width = self.content.get_width()
+        self.height = self.content.get_height()
+
+        if 'pos' in kwargs.keys():
+            self.pos = kwargs['pos']
+        else:
+            self.pos = [0, 0]
+
+        if 'centered' in kwargs.keys():
+            if kwargs['centered']:
+                self.pos = [(self.parent.width - self.width) // 2, (self.parent.height - self.height) // 2]
+
 
 
 class Background(Component):
