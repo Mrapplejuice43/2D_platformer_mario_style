@@ -6,6 +6,9 @@ OPTION_EVENT = USEREVENT + 2
 BACK_EVENT = USEREVENT + 3
 EDITOR_EVENT = USEREVENT + 4
 MAIN_MENU_EVENT = USEREVENT + 5
+SELECT_GROUND = USEREVENT + 6
+SELECT_BLOCK = USEREVENT + 7
+SELECT_PLAYER = USEREVENT + 8
 
 class Overlay:
     def __init__(self, width, height):
@@ -65,3 +68,17 @@ class PauseMenu(Overlay):
         self.components[1].addChild(Text(parent=self.components[1], content="1"))
         self.components[2].addChild(Text(parent=self.components[2], content="2"))
         self.components[3].addChild(Text(parent=self.components[3], content="Return to Menu"))
+
+
+class EditorMenu(Overlay):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+        self.addComponent(
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_GROUND, [10, 90], posType='percentFromCenter'),
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_BLOCK, [20, 90], posType='percentFromCenter'),
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_PLAYER, [30, 90], posType='percentFromCenter')
+        )
+
+        self.components[0].addChild(Image(self.components[0], 50, 50, [0,0], r"assets\topGround.png"))
+        self.components[1].addChild(Image(self.components[1], 50, 50, [0,0], r"assets\block.png"))
+        self.components[2].addChild(Image(self.components[2], 50, 50, [0,0], r"assets\balkany.png"))

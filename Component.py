@@ -42,6 +42,7 @@ class Component:
 
     def addChild(self, component):
         if isinstance(component, Component):
+            component.pos = [self.pos[0] + component.pos[0], self.pos[1] + component.pos[1]]
             self.children.append(component)
 
 
