@@ -23,17 +23,23 @@ class Game:
         """
         Updates players states and gameObjects states
         """
+        cameraOffsetLeft = self.camera.xmin - (self.camera.initialValues[0] * self.tileSize[0])
         for go in self.world.gameObjects:
+            if ((go.pos[0] + go.width) * self.tileSize[0] > cameraOffsetLeft and
+                    go.pos[0] < cameraOffsetLeft + self.windowSize[0]):
+                go.onScreen = True
+            else:
+                go.onScreen = False
 
-            if not go.onScreen:
-                if ((go.pos[0] + go.width) * self.tileSize[0] > self.camera.xmin - self.camera.initialValues[0] * self.tileSize[0] and
-                        go.pos[0] < self.camera.xmax - self.camera.initialValues[0] * self.tileSize[0]):
-                    go.onScreen = True
-                else:
-                    go.onScreen = False
+        for actor in self.world.actors:
+            if (actor.pos[0] + (actor.width * self.tileSize[0]) > cameraOffsetLeft and
+                    actor.pos[0] < cameraOffsetLeft + self.windowSize[0]):
+                actor.onScreen = True
+            else:
+                actor.onScreen = False
 
         for player in self.world.players:
-            player.update(keys, dt, sizeRatio, self.world.gameObjects, self.tileSize, self.scale)
+            player.update(keys, dt, sizeRatio, self.world.gameObjects, self.world.actors, self.tileSize, self.scale)
             self.camera.checkPlayerPos(player)
 
             if player.pos[1] + player.height * self.tileSize[1] < 0:
@@ -88,4 +94,4 @@ class Game:
         """
         self.world.draw(screen)
         if self.debugMode:
-            self.camera.draw(screen, self.calculateDrawingCoordinates(self.camera))
+            self.camera.draw(screen)
