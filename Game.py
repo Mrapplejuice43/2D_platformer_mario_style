@@ -5,9 +5,9 @@ import numpy as np
 
 
 class Game:
-    def __init__(self, windowSize, tileSize, gameScale):
+    def __init__(self, windowSize, tileSize, gameScale, level=None):
 
-        self.world = World(windowSize, tileSize, gameScale)
+        self.world = World(windowSize, tileSize, gameScale, level)
         self.camera = Camera(windowSize, tileSize, gameScale)
         self.windowSize = windowSize
         self.tileSize = tileSize
@@ -21,8 +21,9 @@ class Game:
 
     def update(self, keys, dt, sizeRatio):
         """
-        Updates players states and gameObjects states
+        Updates player's states and gameObjects' states
         """
+
         cameraOffsetLeft = self.camera.xmin - (self.camera.initialValues[0] * self.tileSize[0])
         for go in self.world.gameObjects:
             if ((go.pos[0] + go.width) * self.tileSize[0] > cameraOffsetLeft and
@@ -38,12 +39,13 @@ class Game:
             else:
                 actor.onScreen = False
 
-        for player in self.world.players:
-            player.update(keys, dt, sizeRatio, self.world.gameObjects, self.world.actors, self.tileSize, self.scale)
-            self.camera.checkPlayerPos(player)
+            if actor.life < 1:
+                self.world.actors.remove(actor)
 
-            if player.pos[1] + player.height * self.tileSize[1] < 0:
-                self.reset()
+            actor.update(dt, sizeRatio, self.world.gameObjects, self.tileSize, self.scale)
+
+        self.world.update(keys, dt, sizeRatio)
+        self.camera.checkPlayerPos(self.world.player)
 
     def moveCamera(self, dx, dy):
         self.world.worldOrigin += (dx, dy)
@@ -60,9 +62,11 @@ class Game:
         """
         self.world.readWorld(fic)
 
+    def changeLevel(self, level):
+        self.world.changeLevel(level)
+
     def reset(self):
-        for player in self.world.players:
-            player.reset()
+        self.world.resetWorld()
         self.camera.reset()
         self.world.worldOrigin = np.array((0, self.windowSize[1]))
 
@@ -76,7 +80,8 @@ class Game:
             return (
                 (obj.initialValues[4] - self.worldOrigin) * np.array((1, -1)),
                 (
-                    (obj.initialValues[0] * self.tileSize[0], self.worldOrigin[1] - obj.initialValues[2] * self.tileSize[1]),
+                    (obj.initialValues[0] * self.tileSize[0],
+                     self.worldOrigin[1] - obj.initialValues[2] * self.tileSize[1]),
                     ((obj.xmax - obj.xmin), obj.ymin - obj.ymax)
                 )
             )

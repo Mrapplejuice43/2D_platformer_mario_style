@@ -103,9 +103,15 @@ class Box(GameObject):
         super().__init__(args[0], args[1], args[2])
         self.color = (255, 60, 0)
         self.sprite = pygame.image.load(r'assets\\block.png')
+        self.isBroken = False
 
     def draw(self, screen, coords, width, height):
         if self.onScreen:
             screen.blit(pygame.transform.scale(self.sprite, (int(width), int(height))), coords)
             if self.debugMode:
                 pygame.draw.ellipse(screen, (0, 0, 0), pygame.Rect([coords - (3, 3), (6, 6)]), 0)
+
+    def activate(self):
+        if not self.isBroken:
+            self.isBroken = True
+            self.sprite = pygame.image.load(r'assets\\brokenBlock.png')

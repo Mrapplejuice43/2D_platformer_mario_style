@@ -82,6 +82,9 @@ class Window:
         elif self.state == GAME_STATE:
             self.game.resize((width, height), self.tileSize)
 
+    def resetWorld(self):
+        self.game.reset()
+
     def handleEvents(self):
         for event in pygame.event.get():
 
@@ -95,10 +98,20 @@ class Window:
                 if event.type == CAMERA_TRIGGER:
                     self.game.moveCamera(event.__dict__["dx"], event.__dict__["dy"])
 
-                if event.type == MAIN_MENU_EVENT:
-                    self.game.reset()
-                    self.game.pause = not self.game.pause
-                    self.state = MAIN_MENU
+                if event.type == GAME_EVENT:
+                    id = event.__dict__['id']
+
+                    if id == PLAY_EVENT:
+                        self.game.pause = not self.game.pause
+
+                    if id == RESET_WORLD:
+                        self.game.pause = not self.game.pause
+                        self.game.reset()
+
+                    if id == MAIN_MENU_EVENT:
+                        self.game.reset()
+                        self.game.pause = not self.game.pause
+                        self.state = MAIN_MENU
 
                 if event.type == MOUSEBUTTONDOWN:
                     if self.game.pause:
@@ -129,9 +142,6 @@ class Window:
                 if event.type == VIDEORESIZE:
                     self.resize(event.__dict__['w'], event.__dict__['h'])
 
-                if event.type == QUIT:
-                    self.shouldClose = True
-
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.shouldClose = True
@@ -140,7 +150,13 @@ class Window:
                     self.menu.checkClickPos(event.pos)
 
                 if event.type == GAME_EVENT:
-                    self.state = GAME_STATE
+                    id = event.__dict__['id']
+
+                    if id == PLAY_EVENT:
+                        self.state = GAME_STATE
+
+                    if id == QUIT_EVENT:
+                        self.shouldClose = True
 
     def run(self):
         """

@@ -1,6 +1,9 @@
 import pygame
-from pygame.locals import NOEVENT
+from pygame.locals import NOEVENT, USEREVENT
 import numpy as np
+
+# Event type used by pygame
+GAME_EVENT = USEREVENT + 1
 
 
 class Component:
@@ -10,11 +13,12 @@ class Component:
         self.pos = pos
         self.content = content
         self.eventType = NOEVENT
+        self.eventId = 0
         self.children = []
         self.parent = parent
 
     def throwEvent(self):
-        pygame.event.post(pygame.event.Event(self.eventType, {}))
+        pygame.event.post(pygame.event.Event(self.eventType, {'id': self.eventId}))
 
     def resize(self, oldWidth, width, oldHeight, height):
         self.width = width * self.width // oldWidth
@@ -28,8 +32,11 @@ class Component:
         for child in self.children:
             child.move(dx, dy)
 
-    def changeEvent(self, ev):
+    def changeEventType(self, ev):
         self.eventType = ev
+
+    def changeEventId(self, id):
+        self.eventId = id
 
     def draw(self, screen):
         screen.blit(self.content, self.pos)
@@ -47,13 +54,18 @@ class Component:
 
 
 class Button(Component):
-    def __init__(self, parent, width, height, content, eventType, pos, **kwargs):
+    def __init__(self, parent, width, height, content, eventId, pos, **kwargs):
         super().__init__(parent,
                          width,
                          height,
                          pygame.transform.scale(pygame.image.load(content), (width, height)))
 
-        self.eventType = eventType
+        self.eventId = eventId
+
+        if 'eventType' in kwargs:
+            self.eventType = kwargs['eventType']
+        else:
+            self.eventType = GAME_EVENT
 
         if ('posType' in kwargs):
             if (kwargs['posType'] == 'percentFromCenter'):
@@ -89,9 +101,8 @@ class Text(Component):
                 self.pos = [(self.parent.width - self.width) // 2, (self.parent.height - self.height) // 2]
 
 
-
 class Background(Component):
     def __init__(self, parent, width, height, color=(0, 0, 0, 150)):
         super().__init__(parent, width, height, pos=[0, 0])
-        if len(color) == 4 : self.color = color
+        if len(color) == 4: self.color = color
         self.content = pygame.Surface((width, height)).convert_alpha()

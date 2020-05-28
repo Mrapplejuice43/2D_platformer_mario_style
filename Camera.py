@@ -3,6 +3,7 @@ import pygame
 
 CAMERA_TRIGGER = pygame.USEREVENT
 
+
 class Camera:
     def __init__(self, size, tileSize, gameScale):
         self.size = np.array(size)
@@ -47,7 +48,8 @@ class Camera:
 
         e = np.array(self.initialValues[4]) * size // self.size * np.array((1, -1))
         f = ((self.initialValues[0] * caseSize[0], self.initialValues[2] * caseSize[1]),
-             (self.initialValues[1] * caseSize[0] - self.initialValues[0] * caseSize[0], self.initialValues[3] * caseSize[1] - self.initialValues[2] * caseSize[1]))
+             (self.initialValues[1] * caseSize[0] - self.initialValues[0] * caseSize[0],
+              self.initialValues[3] * caseSize[1] - self.initialValues[2] * caseSize[1]))
         self.initialValues = (8, 28, 4, 24, e, f)
         self.size = np.array(size)
         self.tileSize = caseSize
