@@ -8,7 +8,6 @@ class Game:
     def __init__(self, windowSize, tileSize, gameScale, level=None):
 
         self.world = World(windowSize, tileSize, gameScale, level)
-        self.camera = Camera(windowSize, tileSize, gameScale)
         self.windowSize = windowSize
         self.tileSize = tileSize
         self.scale = gameScale
@@ -23,33 +22,10 @@ class Game:
         """
         Updates player's states and gameObjects' states
         """
-
-        cameraOffsetLeft = self.camera.xmin - (self.camera.initialValues[0] * self.tileSize[0])
-        for go in self.world.gameObjects:
-            if ((go.pos[0] + go.width) * self.tileSize[0] > cameraOffsetLeft and
-                    go.pos[0] < cameraOffsetLeft + self.windowSize[0]):
-                go.onScreen = True
-            else:
-                go.onScreen = False
-
-        for actor in self.world.actors:
-            if (actor.pos[0] + (actor.width * self.tileSize[0]) > cameraOffsetLeft and
-                    actor.pos[0] < cameraOffsetLeft + self.windowSize[0]):
-                actor.onScreen = True
-            else:
-                actor.onScreen = False
-
-            if actor.life < 1:
-                self.world.actors.remove(actor)
-
-            actor.update(dt, sizeRatio, self.world.gameObjects, self.tileSize, self.scale)
-
         self.world.update(keys, dt, sizeRatio)
-        self.camera.checkPlayerPos(self.world.player)
 
     def moveCamera(self, dx, dy):
-        self.world.worldOrigin += (dx, dy)
-        self.camera.move(dx, dy)
+        self.world.moveCamera(dx, dy)
 
     def switchDebugMode(self):
         self.debugMode = not self.debugMode
@@ -67,8 +43,6 @@ class Game:
 
     def reset(self):
         self.world.resetWorld()
-        self.camera.reset()
-        self.world.worldOrigin = np.array((0, self.windowSize[1]))
 
     def calculateDrawingCoordinates(self, obj):
         if isinstance(obj, Camera):
@@ -86,17 +60,14 @@ class Game:
                 )
             )
 
-    def resize(self, windowSize, caseSize):
-        self.world.resize(windowSize, caseSize)
+    def resize(self, windowSize, tileSize):
+        self.world.resize(windowSize, tileSize)
         self.windowSize = windowSize
-        self.tileSize = caseSize
+        self.tileSize = tileSize
         self.pauseOverlay.resize(windowSize[0], windowSize[1])
-        self.camera.resize(windowSize, caseSize)
 
     def draw(self, screen):
         """
         Drawing function of the game
         """
         self.world.draw(screen)
-        if self.debugMode:
-            self.camera.draw(screen)

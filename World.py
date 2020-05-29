@@ -7,6 +7,7 @@ class World:
     def __init__(self, canvasSize, tileSize, gameScale, level=None):
         self.canvasSize = (canvasSize[0], canvasSize[1])
         self.worldOrigin = np.array((0, canvasSize[1]))
+        self.camera = Camera(canvasSize, tileSize, gameScale)
         self.level = level
         self.tileSize = np.array(tileSize)
         self.scale = gameScale
@@ -71,6 +72,7 @@ class World:
                                      self.worldOrigin[1] * windowSize[1] // self.canvasSize[1]))
         self.canvasSize = windowSize
         self.tileSize = tileSize
+        self.camera.resize(windowSize, tileSize)
 
     def changeLevel(self, newLevel):
         """Made for code clarity"""
@@ -79,6 +81,8 @@ class World:
     def resetWorld(self):
         """Made for code clarity"""
         self.readWorld(self.level)
+        self.camera.reset()
+        self.worldOrigin = np.array((0, self.canvasSize[1]))
 
     def readWorld(self, fic):
         """
@@ -155,9 +159,39 @@ class World:
         self.player.draw(screen, self.calculateDrawingCoordinates(self.player),
                          self.player.width * self.tileSize[0], self.player.height * self.tileSize[1])
 
+        if self.debugMode:
+            self.camera.draw(screen)
+
     def update(self, keys, dt, sizeRatio):
+
+        cameraOffsetLeft = self.camera.xmin - (self.camera.initialValues[0] * self.tileSize[0])
+        for go in self.gameObjects:
+            if ((go.pos[0] + go.width) * self.tileSize[0] > cameraOffsetLeft and
+                    go.pos[0] < cameraOffsetLeft + self.canvasSize[0]):
+                go.onScreen = True
+            else:
+                go.onScreen = False
+
+        for actor in self.actors:
+            if (actor.pos[0] + (actor.width * self.tileSize[0]) > cameraOffsetLeft and
+                    actor.pos[0] < cameraOffsetLeft + self.canvasSize[0]):
+                actor.onScreen = True
+            else:
+                actor.onScreen = False
+
+            if actor.life < 1:
+                self.actors.remove(actor)
+
+            actor.update(dt, sizeRatio, self.gameObjects, self.tileSize, self.scale)
+
+        self.camera.checkPlayerPos(self.player)
+
         if self.player.pos[1] + self.player.height * self.tileSize[1] < 0 or self.player.life <= 0:
             self.resetWorld()
 
         self.player.update(keys, dt, sizeRatio, self.gameObjects, self.actors, self.tileSize,
                            self.scale)
+
+    def moveCamera(self, dx, dy):
+        self.worldOrigin += (dx, dy)
+        self.camera.move(dx, dy)
