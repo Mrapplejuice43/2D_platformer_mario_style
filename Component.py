@@ -4,6 +4,8 @@ import numpy as np
 
 # Event type used by pygame
 GAME_EVENT = USEREVENT + 1
+MENU_EVENT = USEREVENT + 2
+EDITOR_EVENT = USEREVENT + 3
 
 
 class Component:
@@ -65,7 +67,7 @@ class Button(Component):
         if 'eventType' in kwargs:
             self.eventType = kwargs['eventType']
         else:
-            self.eventType = GAME_EVENT
+            self.eventType = MENU_EVENT
 
         if ('posType' in kwargs):
             if (kwargs['posType'] == 'percentFromCenter'):
