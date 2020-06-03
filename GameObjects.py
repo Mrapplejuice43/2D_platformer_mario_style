@@ -11,7 +11,7 @@ class GameObject:
         self.height = args[1]
         self.pos = np.array(args[2])
         self.color = np.array((0, 0, 0))
-        self.onScreen = False
+        self.onScreen = True
         self.debugMode = False
 
     def toString(self):

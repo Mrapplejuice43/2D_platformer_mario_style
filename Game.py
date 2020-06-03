@@ -1,5 +1,4 @@
 from Overlay import *
-from Camera import *
 from World import *
 import numpy as np
 
@@ -46,11 +45,6 @@ class Game:
 
     def calculateDrawingCoordinates(self, obj):
         if isinstance(obj, Camera):
-            # return (pos, rect) position of the camera and boundaries
-            # return ((obj.pos - self.worldOrigin) * np.array((1, -1)),  # pos
-            #         ((obj.xmin, self.worldOrigin[1] - obj.ymin),  # rect part 1
-            #         ((obj.initialValues[1] - obj.initialValues[0]), -(self.worldOrigin[1] - obj.ymin + (obj.ymax - self.worldOrigin[1])))))  # rect part 2
-
             return (
                 (obj.initialValues[4] - self.worldOrigin) * np.array((1, -1)),
                 (
