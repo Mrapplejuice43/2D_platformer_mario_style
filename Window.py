@@ -1,10 +1,12 @@
 from Game import *
 from World import *
 from Overlay import *
+from Editor import *
 import numpy as np
 
 GAME_STATE = 0
 MAIN_MENU = 1
+EDITOR_MODE = 2
 BASESIZE = (1280, 720)
 
 
@@ -29,19 +31,14 @@ class Window:
 
         self.state = MAIN_MENU
         self.game = Game((self.width, self.height), self.tileSize, self.scale)
+        self.editor = Editor((self.width, self.height), self.tileSize, self.scale)
         self.game.readWorld(r"worldTest.wd")
 
         self.menu = Menu(self.width, self.height)
 
-    def drawGrid(self):
-        for l in range(self.height // self.tileSize[1] + 1):
-            pygame.draw.line(
-                self.screen, (0, 0, 0), (0, self.height - l * self.tileSize[1]),
-                (self.width, self.height - l * self.tileSize[1]))
-
-        for t in range(self.width // self.tileSize[0] + 1):
-            pygame.draw.line(self.screen, (0, 0, 0),
-                             (t * self.tileSize[0], 0), (t * self.tileSize[0], self.height))
+        # For editor events
+        self.mouseGrab = False
+        self.mousePos = [0,0]
 
     def drawGame(self):
         """
@@ -55,9 +52,17 @@ class Window:
                     "fps : {0}".format(self.fps), False, (0, 0, 0)), (0, 20))
 
     def drawMenu(self):
+        """
+        Draws the menu at the 1st screen
+        :return:
+        """
         self.menu.draw(self.screen)
 
     def drawPauseMenu(self):
+        """
+        Draws the pause menu of the game
+        :return:
+        """
         self.game.pauseOverlay.draw(self.screen)
 
     def getKeys(self):
@@ -67,6 +72,10 @@ class Window:
         return pygame.key.get_pressed()
 
     def update(self):
+        """
+        Updates the time to keep track of the physics
+        :return:
+        """
         self.fps = self.clock.get_fps()
         self.time = pygame.time.get_ticks()
 
@@ -86,29 +95,33 @@ class Window:
         self.game.reset()
 
     def handleEvents(self):
+        """
+        Retrieve events from pygame and process them to interact with the program and make the overlays work
+        :return:
+        """
         for event in pygame.event.get():
+
+            if event.type == QUIT:
+                self.shouldClose = True
 
             if self.state == GAME_STATE:
                 if event.type == VIDEORESIZE:
                     self.resize(event.__dict__['w'], event.__dict__['h'])
 
-                if event.type == QUIT:
-                    self.shouldClose = True
-
                 if event.type == CAMERA_TRIGGER:
                     self.game.moveCamera(event.__dict__["dx"], event.__dict__["dy"])
 
-                if event.type == GAME_EVENT:
+                if event.type == MENU_EVENT:
                     id = event.__dict__['id']
 
-                    if id == PLAY_EVENT:
+                    if id == PLAY_ID:
                         self.game.pause = not self.game.pause
 
                     if id == RESET_WORLD:
                         self.game.pause = not self.game.pause
                         self.game.reset()
 
-                    if id == MAIN_MENU_EVENT:
+                    if id == MAIN_MENU_ID:
                         self.game.reset()
                         self.game.pause = not self.game.pause
                         self.state = MAIN_MENU
@@ -149,14 +162,72 @@ class Window:
                 if event.type == MOUSEBUTTONDOWN:
                     self.menu.checkClickPos(event.pos)
 
-                if event.type == GAME_EVENT:
+                if event.type == MENU_EVENT:
                     id = event.__dict__['id']
 
-                    if id == PLAY_EVENT:
+                    if id == PLAY_ID:
                         self.state = GAME_STATE
 
-                    if id == QUIT_EVENT:
+                    if id == QUIT_ID:
                         self.shouldClose = True
+
+                    if id == EDITOR_ID:
+                        self.state = EDITOR_MODE
+                        self.editor = Editor((self.width, self.height), self.tileSize, self.scale)
+
+            elif self.state == EDITOR_MODE:
+                if event.type == KEYDOWN:
+                    if event.__dict__['key'] == K_ESCAPE:
+                        self.editor.pause = not self.editor.pause
+
+                    elif event.__dict__['key'] == K_TAB:
+                        self.editor.showOverlay = not self.editor.showOverlay
+
+                elif event.type == MOUSEBUTTONDOWN:
+                    if self.editor.pause:
+                        self.editor.pauseOverlay.checkClickPos(event.pos)
+                    else:
+                        if self.editor.showOverlay and not self.editor.overlay.checkClickPos(event.pos):
+                            if event.__dict__["button"] == 3:
+                                self.mouseGrab = True
+                                self.mousePos = event.__dict__['pos']
+                            elif event.__dict__["button"] == 1:
+                                self.editor.place(event.pos)
+
+                elif event.type == MOUSEBUTTONUP:
+                    if event.__dict__["button"] == 3:
+                        self.mouseGrab = False
+
+                elif event.type == MOUSEMOTION:
+                    if self.mouseGrab:
+                        self.mousePos = event.__dict__['pos']
+                        dx, dy = event.__dict__['rel']
+                        self.editor.move(-dx, dy)
+
+                elif event.type == GAME_EVENT:
+                    pass
+
+                elif event.type == MENU_EVENT:
+                    id = event.__dict__['id']
+
+                    if id == PLAY_ID:
+                        self.editor.pause = False
+
+                    elif id == SAVE_ID:
+                        pass
+
+                    elif id == MAIN_MENU_ID:
+                        self.state = MAIN_MENU
+
+                elif event.type == EDITOR_EVENT:
+                    id = event.__dict__['id']
+
+                    if id == SELECT_GROUND:
+                        self.editor.changeType(GROUND_TYPE)
+                    elif id == SELECT_BLOCK:
+                        self.editor.changeType(BLOCK_TYPE)
+                    elif id == SELECT_PLAYER:
+                        self.editor.changeType(PLAYER_TYPE)
 
     def run(self):
         """
@@ -169,17 +240,24 @@ class Window:
             if self.state == MAIN_MENU:
                 self.screen.fill((50, 50, 50))
                 self.drawMenu()
+
             elif self.state == GAME_STATE:
                 if self.fps > 0:
                     if not self.game.pause:
                         self.game.update(self.getKeys(), self.clock.get_time() / 1000, self.sizeRatio)
                         self.drawGame()
+
                     else:
                         self.drawGame()
                         self.drawPauseMenu()
 
-            if self.isGridDrawn:
-                self.drawGrid()
+            elif self.state == EDITOR_MODE:
+                self.editor.draw(self.screen)
+
+                if self.editor.showOverlay:
+                    self.editor.drawOverlay(self.screen)
+                if self.editor.pause:
+                    self.editor.drawPauseOverlay(self.screen)
 
             self.handleEvents()
             pygame.display.flip()
