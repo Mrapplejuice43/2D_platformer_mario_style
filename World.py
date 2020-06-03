@@ -156,7 +156,8 @@ class World:
                 actor.draw(screen, self.calculateDrawingCoordinates(actor),
                            actor.width * self.tileSize[0], actor.height * self.tileSize[1])
 
-        self.player.draw(screen, self.calculateDrawingCoordinates(self.player),
+        if self.player is not None:
+            self.player.draw(screen, self.calculateDrawingCoordinates(self.player),
                          self.player.width * self.tileSize[0], self.player.height * self.tileSize[1])
 
         if self.debugMode:
