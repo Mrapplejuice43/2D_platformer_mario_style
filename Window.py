@@ -32,7 +32,7 @@ class Window:
         self.state = MAIN_MENU
         self.game = Game((self.width, self.height), self.tileSize, self.scale)
         self.editor = Editor((self.width, self.height), self.tileSize, self.scale)
-        self.game.readWorld(r"worldTest.wd")
+        self.game.readWorld(r"Worlds\worldTest.wd")
 
         self.menu = Menu(self.width, self.height)
 
@@ -193,6 +193,9 @@ class Window:
                                 self.mousePos = event.__dict__['pos']
                             elif event.__dict__["button"] == 1:
                                 self.editor.place(event.pos)
+                        elif not self.editor.showOverlay:
+                            if event.__dict__["button"] == 1:
+                                self.editor.place(event.pos)
 
                 elif event.type == MOUSEBUTTONUP:
                     if event.__dict__["button"] == 3:
@@ -228,6 +231,8 @@ class Window:
                         self.editor.changeType(BLOCK_TYPE)
                     elif id == SELECT_PLAYER:
                         self.editor.changeType(PLAYER_TYPE)
+                    elif id == CHANGE_MODE:
+                        self.editor.changeMode()
 
     def run(self):
         """

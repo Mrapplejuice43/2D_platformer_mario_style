@@ -12,6 +12,7 @@ SELECT_PLAYER = 8
 RESET_WORLD = 9
 QUIT_ID = 10
 SAVE_ID = 11
+CHANGE_MODE = 12
 
 
 class Overlay:
@@ -90,12 +91,14 @@ class EditorMenu(Overlay):
         self.addComponent(
             Button(self, 50, 50, r"assets\testButton.png", SELECT_GROUND, [10, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
             Button(self, 50, 50, r"assets\testButton.png", SELECT_BLOCK, [20, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
-            Button(self, 50, 50, r"assets\testButton.png", SELECT_PLAYER, [30, 90], posType='percentFromCenter', eventType=EDITOR_EVENT)
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_PLAYER, [30, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
+            Button(self, 100, 30, r"assets\testButton.png", CHANGE_MODE, [50, 50], eventType=EDITOR_EVENT)
         )
 
         self.components[0].addChild(Image(self.components[0], 50, 50, [0, 0], r"assets\topGround.png"))
         self.components[1].addChild(Image(self.components[1], 50, 50, [0, 0], r"assets\block.png"))
         self.components[2].addChild(Image(self.components[2], 50, 50, [0, 0], r"assets\balkany.png"))
+        self.components[3].addChild(Text(parent=self.components[3], content="Switch Mode", centered=True, size=14))
 
 class EditorPauseMenu(Overlay):
     def __init__(self, width, height):

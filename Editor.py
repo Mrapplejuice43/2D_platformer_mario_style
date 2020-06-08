@@ -70,6 +70,9 @@ class Editor():
 
     def drawOverlay(self, screen):
         self.overlay.draw(screen)
+        screen.blit(
+            pygame.font.SysFont("Consolas", 18, True).render("Mode : {}".format(self.mode), False, (50, 50, 50)), [10, 20]
+        )
 
     def drawPauseOverlay(self, screen):
         self.pauseOverlay.draw(screen)
@@ -111,31 +114,35 @@ class Editor():
         :return:
         """
         tilePos = self.checkClickPos(pos)
+        world = self.tmpWorld
         if self.mode == PLACE_MODE:
             if self.type == GROUND_TYPE:
-                s = self.tmpWorld[tilePos[1]].split()
-                s[tilePos[0]] = 'g'
-                self.tmpWorld[tilePos[1]] = " ".join(s)
+                world[tilePos[1]][tilePos[0]] = 'g'
 
             elif self.type == BLOCK_TYPE:
-                s = self.tmpWorld[tilePos[1]].split()
-                s[tilePos[0]] = 'b'
-                self.tmpWorld[tilePos[1]] = " ".join(s)
+                world[tilePos[1]][tilePos[0]] = 'b'
 
             elif self.type == PLAYER_TYPE and tilePos[1] < self.worldSize[1]:
                 if self.world.player is not None:
-                    for line in range(len(self.tmpWorld)):
-                        if 'P' in self.tmpWorld[line]:
-                            self.tmpWorld[line] = self.tmpWorld[line].replace('P', '.')
+                    for line in range(len(world)):
+                        if 'P' in world[line]:
+                            world[line][world[line].index('P')] = '.'
                     self.world.player = None
 
-                s = self.tmpWorld[tilePos[1]].split()
-                s[tilePos[0]] = 'P'
-                self.tmpWorld[tilePos[1]] = " ".join(s)
+                world[tilePos[1]][tilePos[0]] = 'P'
+                world[tilePos[1] + 1][tilePos[0]] = 'P'
 
-                s = self.tmpWorld[tilePos[1] + 1].split()
-                s[tilePos[0]] = 'P'
-                self.tmpWorld[tilePos[1] + 1] = " ".join(s)
+        if self.mode == REMOVE_MODE:
+            if world[tilePos[1]][tilePos[0]] == 'P':
+                if tilePos[1] > 0:
+                    if world[tilePos[1] - 1][tilePos[0]] == 'P':
+                        world[tilePos[1] - 1][tilePos[0]] = '.'
+
+                if tilePos[1] < self.worldSize[1] - 1:
+                    if world[tilePos[1] + 1][tilePos[0]] == 'P':
+                        world[tilePos[1] + 1][tilePos[0]] = '.'
+
+            world[tilePos[1]][tilePos[0]] = '.'
 
         self.renderWorld()
         self.readWorld(self.worldFile)
@@ -143,12 +150,22 @@ class Editor():
     def changeType(self, type):
         self.type = type
 
+    def changeMode(self):
+        if self.mode == REMOVE_MODE:
+            self.mode = PLACE_MODE
+        else:
+            self.mode = REMOVE_MODE
+
+    def renameWorldFile(self, name):
+        os.rename(self.worldFile, name)
+        self.worldFile = name
+
     def generateEmptyWorld(self):
         world = []
         for line in range(self.worldSize[1]):
-            tmp = ''
+            tmp = []
             for col in range(self.worldSize[0]):
-                tmp += '. '
+                tmp += '.'
             world.append(tmp)
         return world
 
@@ -161,7 +178,13 @@ class Editor():
          ...
         ]
 
-        To a format that's easier to generate blocks without having tons of instances
+        To a format that's easier to generate blocks without having tons of instances :
+
+        type width height x y
+        g 4 2 1 0
+        b 1 1 6 2
+        b 1 1 7 2
+        ...
 
         :return:
         """
@@ -171,27 +194,26 @@ class Editor():
         flattenedWorldX = []
 
         for line in w:
-            lineArray = line.split()
-            objType = lineArray[0]
+            objType = line[0]
             startPos = 0
             count = 0
             tmp = []
 
-            for col in range(1, len(lineArray)):
-                if objType == lineArray[col] and objType != 'b':
+            for col in range(1, len(line)):
+                if objType == line[col] and objType != 'b':
                     count += 1
                 else:
                     if objType != '.':
                         tmp.append(str(startPos) + ';' + str(startPos + count) + ';' + objType)
                     count = 0
                     startPos = col
-                    objType = lineArray[col]
+                    objType = line[col]
 
             flattenedWorldX.append(tmp)
 
         objType = None
         startPos = 0
-        count = 1
+        count = 0
         tmp = []
         test = True
 

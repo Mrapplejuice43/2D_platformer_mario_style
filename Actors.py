@@ -170,7 +170,6 @@ class Actor:
 
     def checkPositionCollisions(self, gameObjects, tileSize):
         # Temporary vars in order to make collision detection independent from gameObjects order and improve efficiency
-        # TODO Make an improvement on collision detection to avoid checking all objects on screen
         actor = self
         onGround = False
         canMoveUp = True
@@ -196,8 +195,8 @@ class Actor:
                     xCollide = True
 
                 # Check if player and obj overlap on the y direction
-                if (actor.pos[0] + tmpSpeed[0] <= (gameObj.pos[0] + gameObj.width) * tileSize[0]
-                        and actor.pos[0] + tmpSpeed[0] + actor.width * tileSize[0] >= gameObj.pos[0] * tileSize[0]):
+                if (actor.pos[0] + tmpSpeed[0] < (gameObj.pos[0] + gameObj.width) * tileSize[0]
+                        and actor.pos[0] + tmpSpeed[0] + actor.width * tileSize[0] > gameObj.pos[0] * tileSize[0]):
                     yCollide = True
 
                     above = actor.pos[1] >= (gameObj.pos[1] + gameObj.height) * tileSize[1]

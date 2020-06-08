@@ -86,21 +86,16 @@ class Image(Component):
 
 
 class Text(Component):
-    def __init__(self, **kwargs):
-        super().__init__(kwargs['parent'])
+    def __init__(self, parent, size=25, color=(255,255,255), pos=(0, 0), centered=True, **kwargs):
+        super().__init__(parent)
 
-        self.content = pygame.font.SysFont("Consolas", 25).render(kwargs['content'], False, (255, 255, 255))
+        self.content = pygame.font.SysFont("Consolas", size).render(kwargs['content'], False, color)
         self.width = self.content.get_width()
         self.height = self.content.get_height()
+        self.pos = pos
 
-        if 'pos' in kwargs.keys():
-            self.pos = kwargs['pos']
-        else:
-            self.pos = [0, 0]
-
-        if 'centered' in kwargs.keys():
-            if kwargs['centered']:
-                self.pos = [(self.parent.width - self.width) // 2, (self.parent.height - self.height) // 2]
+        if centered:
+            self.pos = [(self.parent.width - self.width) // 2, (self.parent.height - self.height) // 2]
 
 
 class Background(Component):
