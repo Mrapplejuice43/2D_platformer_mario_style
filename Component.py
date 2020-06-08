@@ -86,7 +86,7 @@ class Image(Component):
 
 
 class Text(Component):
-    def __init__(self, parent, size=25, color=(255,255,255), pos=(0, 0), centered=True, **kwargs):
+    def __init__(self, parent, size=25, color=(255, 255, 255), pos=(0, 0), centered=True, **kwargs):
         super().__init__(parent)
 
         self.content = pygame.font.SysFont("Consolas", size).render(kwargs['content'], False, color)

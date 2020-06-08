@@ -12,6 +12,7 @@ GROUND_TYPE = 0
 BLOCK_TYPE = 1
 PLAYER_TYPE = 2
 
+
 class Editor():
     def __init__(self, windowSize, tileSize, gameScale):
         self.world = World(windowSize, tileSize, gameScale)
@@ -19,13 +20,10 @@ class Editor():
 
         self.tmpWorld = self.generateEmptyWorld()
 
-
         num = 1
         while os.path.exists(r"Worlds\newWorld{}.w".format(num)):
             num += 1
         self.worldFile = r"Worlds\newWorld{}.w".format(num)
-
-        # self.readWorld(r"worldTest.wd")
 
         self.windowSize = windowSize
         self.tileSize = tileSize
@@ -71,7 +69,8 @@ class Editor():
     def drawOverlay(self, screen):
         self.overlay.draw(screen)
         screen.blit(
-            pygame.font.SysFont("Consolas", 18, True).render("Mode : {}".format(self.mode), False, (50, 50, 50)), [10, 20]
+            pygame.font.SysFont("Consolas", 18, True).render("Mode : {}".format(self.mode), False, (50, 50, 50)),
+            [10, 20]
         )
 
     def drawPauseOverlay(self, screen):
@@ -266,4 +265,3 @@ class Editor():
 
         outFic.writelines(objs)
         outFic.close()
-

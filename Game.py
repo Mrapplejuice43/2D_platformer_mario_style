@@ -5,7 +5,6 @@ import numpy as np
 
 class Game:
     def __init__(self, windowSize, tileSize, gameScale, level=None):
-
         self.world = World(windowSize, tileSize, gameScale, level)
         self.windowSize = windowSize
         self.tileSize = tileSize

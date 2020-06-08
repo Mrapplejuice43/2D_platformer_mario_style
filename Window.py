@@ -38,7 +38,7 @@ class Window:
 
         # For editor events
         self.mouseGrab = False
-        self.mousePos = [0,0]
+        self.mousePos = [0, 0]
 
     def drawGame(self):
         """

@@ -42,7 +42,7 @@ class Actor:
         self.onScreen = True
         self.life = 1
 
-        self.speed = np.array((0.0, 0.0), dtype=np.float)  # en pixels/s used to store what speed the player should have
+        self.speed = np.array((0.0, 0.0), dtype=np.float)  # pixels/s used to store what speed the player should have
         self.movementSpeed = np.array((0.0, 0.0), dtype=np.float)  # used to move the player
         self.pos = np.array(args[2])
         self.startPos = tuple(args[2])
@@ -57,7 +57,7 @@ class Actor:
         self.crouched = False
         self.controllable = True
 
-        self.maxHorizontalSpeed = 6  # en pixels/s
+        self.maxHorizontalSpeed = 6  # pixels/s
         self.maxVerticalSpeed = 5
         self.fallbackSpeed = 6
         self.secondsToMaxHorizontalSpeed = .5

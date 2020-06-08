@@ -46,7 +46,7 @@ class Overlay:
         self.width = width
         self.height = height
 
-# TODO Create a game overlay to get various infos like health
+
 class GameOverlay(Overlay):
     def __init__(self, width, height):
         super().__init__(width, height)
@@ -89,9 +89,12 @@ class EditorMenu(Overlay):
     def __init__(self, width, height):
         super().__init__(width, height)
         self.addComponent(
-            Button(self, 50, 50, r"assets\testButton.png", SELECT_GROUND, [10, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
-            Button(self, 50, 50, r"assets\testButton.png", SELECT_BLOCK, [20, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
-            Button(self, 50, 50, r"assets\testButton.png", SELECT_PLAYER, [30, 90], posType='percentFromCenter', eventType=EDITOR_EVENT),
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_GROUND, [10, 90], posType='percentFromCenter',
+                   eventType=EDITOR_EVENT),
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_BLOCK, [20, 90], posType='percentFromCenter',
+                   eventType=EDITOR_EVENT),
+            Button(self, 50, 50, r"assets\testButton.png", SELECT_PLAYER, [30, 90], posType='percentFromCenter',
+                   eventType=EDITOR_EVENT),
             Button(self, 100, 30, r"assets\testButton.png", CHANGE_MODE, [50, 50], eventType=EDITOR_EVENT)
         )
 
@@ -99,6 +102,7 @@ class EditorMenu(Overlay):
         self.components[1].addChild(Image(self.components[1], 50, 50, [0, 0], r"assets\block.png"))
         self.components[2].addChild(Image(self.components[2], 50, 50, [0, 0], r"assets\balkany.png"))
         self.components[3].addChild(Text(parent=self.components[3], content="Switch Mode", centered=True, size=14))
+
 
 class EditorPauseMenu(Overlay):
     def __init__(self, width, height):
