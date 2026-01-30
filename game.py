@@ -1,6 +1,7 @@
-from Overlay import *
-from World import *
+from camera import Camera
 import numpy as np
+from overlay import PauseMenu
+from world import World
 
 
 class Game:

@@ -15,17 +15,22 @@ class Camera:
         self.xmax = int((self.xmin + 20 * self.tileSize[0]) / self.scale)
         self.ymin = int((4 * self.tileSize[1]) / self.scale)
         self.ymax = int((self.ymin + 20 * self.tileSize[1]) / self.scale)
-        self.pos = np.array(((self.xmax - self.xmin) // 2 + self.xmin, (self.ymin - self.ymax) // 2 - self.ymin))
-        self.triggerBounds = ((self.xmin, self.ymin), (self.xmax - self.xmin, self.ymax - self.ymin))
+        self.pos = np.array(((self.xmax - self.xmin) // 2 +
+                            self.xmin, (self.ymin - self.ymax) // 2 - self.ymin))
+        self.triggerBounds = ((self.xmin, self.ymin),
+                              (self.xmax - self.xmin, self.ymax - self.ymin))
 
-        self.initialValues = (8, 28, 4, 24, tuple(self.pos), self.triggerBounds)
+        self.initialValues = (8, 28, 4, 24, tuple(
+            self.pos), self.triggerBounds)
 
     def setPos(self, pos):
         self.pos = np.array(pos)
 
     def draw(self, screen):
-        pygame.draw.ellipse(screen, (0, 0, 0), pygame.Rect(np.array(self.triggerBounds[0]) - 3, (6, 6)), 0)
-        pygame.draw.rect(screen, (200, 50, 50), pygame.Rect(self.triggerBounds), 2)
+        pygame.draw.ellipse(screen, (0, 0, 0), pygame.Rect(
+            np.array(self.triggerBounds[0]) - 3, (6, 6)), 0)
+        pygame.draw.rect(screen, (200, 50, 50),
+                         pygame.Rect(self.triggerBounds), 2)
 
     def reset(self):
         self.xmin = int(self.initialValues[0] * self.tileSize[0] / self.scale)
@@ -43,10 +48,13 @@ class Camera:
         self.xmax = self.xmax * caseSize[0] // self.tileSize[0]
         self.ymin = self.ymin * caseSize[1] // self.tileSize[1]
         self.ymax = self.ymax * caseSize[1] // self.tileSize[1]
-        self.pos = np.array(((self.xmax - self.xmin) // 2 + self.xmin, (self.ymax - self.ymin) // 2 + self.ymin))
-        self.triggerBounds = ((self.xmin, self.ymin), (self.xmax - self.xmin, self.ymax - self.ymin))
+        self.pos = np.array(((self.xmax - self.xmin) // 2 +
+                            self.xmin, (self.ymax - self.ymin) // 2 + self.ymin))
+        self.triggerBounds = ((self.xmin, self.ymin),
+                              (self.xmax - self.xmin, self.ymax - self.ymin))
 
-        e = np.array(self.initialValues[4]) * size // self.size * np.array((1, -1))
+        e = np.array(self.initialValues[4]) * \
+            size // self.size * np.array((1, -1))
         f = ((self.initialValues[0] * caseSize[0], self.initialValues[2] * caseSize[1]),
              (self.initialValues[1] * caseSize[0] - self.initialValues[0] * caseSize[0],
               self.initialValues[3] * caseSize[1] - self.initialValues[2] * caseSize[1]))
@@ -64,17 +72,20 @@ class Camera:
             trigger = pygame.USEREVENT
         elif player.pos[0] + tmpSpeed[0] + (player.width * tileSize[0]) > self.xmax:
             trigger = pygame.USEREVENT
-            dx += player.pos[0] + tmpSpeed[0] + (player.width * tileSize[0]) - self.xmax
+            dx += player.pos[0] + tmpSpeed[0] + \
+                (player.width * tileSize[0]) - self.xmax
 
         if (self.initialValues[2] * tileSize[1]) < player.pos[1] + tmpSpeed[1] < self.ymin:
             dy += player.pos[1] + tmpSpeed[1] - self.ymin
             trigger = pygame.USEREVENT
         elif player.pos[1] + tmpSpeed[1] + (player.height * tileSize[1]) > self.ymax:
-            dy += (player.pos[1] + tmpSpeed[1] + player.height * tileSize[1]) - self.ymax
+            dy += (player.pos[1] + tmpSpeed[1] +
+                   player.height * tileSize[1]) - self.ymax
             trigger = pygame.USEREVENT
 
         if trigger:
-            pygame.event.post(pygame.event.Event(trigger, {'dx': int(dx), 'dy': int(dy)}))
+            pygame.event.post(pygame.event.Event(
+                trigger, {'dx': int(dx), 'dy': int(dy)}))
 
     def move(self, dx, dy):
         self.xmin += dx

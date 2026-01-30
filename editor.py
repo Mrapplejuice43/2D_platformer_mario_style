@@ -1,7 +1,10 @@
-from World import *
-from Overlay import *
+from overlay import EditorPauseMenu,  EditorMenu
 import os
 import re
+import numpy as np
+import pygame
+
+from world import World
 
 # Editing modes
 PLACE_MODE = 0
@@ -21,9 +24,9 @@ class Editor():
         self.tmpWorld = self.generateEmptyWorld()
 
         num = 1
-        while os.path.exists(r"Worlds\newWorld{}.w".format(num)):
+        while os.path.exists(r"worlds/newWorld{}.w".format(num)):
             num += 1
-        self.worldFile = r"Worlds\newWorld{}.w".format(num)
+        self.worldFile = r"worlds/newWorld{}.w".format(num)
 
         self.windowSize = windowSize
         self.tileSize = tileSize
@@ -52,7 +55,8 @@ class Editor():
         if self.worldOrigin[0] + dx < 0:
             x = - self.worldOrigin[0]
         elif self.worldOrigin[0] + self.windowSize[0] + dx >= self.worldSize[0] * self.tileSize[0]:
-            x = (self.worldSize[0] * self.tileSize[0]) - (self.worldOrigin[0] + self.windowSize[0])
+            x = (self.worldSize[0] * self.tileSize[0]) - \
+                (self.worldOrigin[0] + self.windowSize[0])
 
         if self.worldOrigin[1] - self.windowSize[1] + dy < 0:
             y = self.windowSize[1] - self.worldOrigin[1]
@@ -69,7 +73,8 @@ class Editor():
     def drawOverlay(self, screen):
         self.overlay.draw(screen)
         screen.blit(
-            pygame.font.SysFont("Consolas", 18, True).render("Mode : {}".format(self.mode), False, (50, 50, 50)),
+            pygame.font.SysFont("Consolas", 18, True).render(
+                "Mode : {}".format(self.mode), False, (50, 50, 50)),
             [10, 20]
         )
 
@@ -81,7 +86,8 @@ class Editor():
         # Onto game tiles and makes lines appear like the actual grid of the game
         offset = self.offset
         offset[0] = self.worldOrigin[0] % self.tileSize[0]
-        offset[1] = (self.worldOrigin[1] - self.windowSize[1]) % self.tileSize[1]
+        offset[1] = (self.worldOrigin[1] -
+                     self.windowSize[1]) % self.tileSize[1]
 
         for c in range((screen.get_width() // self.tileSize[0]) + 1):
             pygame.draw.line(screen, (70, 70, 70), [self.tileSize[0] * c - offset[0], 0],
@@ -97,9 +103,11 @@ class Editor():
         :param pos: Position of the click in pixels
         :return: [x, y] the coordinates of the updated tile
         """
-        xOffset, yOffset = (self.worldOrigin - (0, self.windowSize[1])) // self.tileSize
+        xOffset, yOffset = (self.worldOrigin -
+                            (0, self.windowSize[1])) // self.tileSize
         xPos = (pos[0] + self.offset[0]) // self.tileSize[0]
-        yPos = (self.windowSize[1] - pos[1] + self.offset[1]) // self.tileSize[1]
+        yPos = (self.windowSize[1] - pos[1] +
+                self.offset[1]) // self.tileSize[1]
 
         return xOffset + xPos, yOffset + yPos
 
@@ -203,7 +211,8 @@ class Editor():
                     count += 1
                 else:
                     if objType != '.':
-                        tmp.append(str(startPos) + ';' + str(startPos + count) + ';' + objType)
+                        tmp.append(str(startPos) + ';' +
+                                   str(startPos + count) + ';' + objType)
                     count = 0
                     startPos = col
                     objType = line[col]
@@ -229,14 +238,16 @@ class Editor():
                         count += 1
                         flattenedWorldX[line].remove(objType)
                     else:
-                        tmp.append(str(startPos) + ';' + str(startPos + count - 1) + ';' + objType)
+                        tmp.append(str(startPos) + ';' +
+                                   str(startPos + count - 1) + ';' + objType)
                         count = 1
                         startPos = line
                         objType = flattenedWorldX[line][0]
                         flattenedWorldX[line].remove(objType)
 
             if objType is not None:
-                tmp.append(str(startPos) + ';' + str(startPos + count - 1) + ';' + objType)
+                tmp.append(str(startPos) + ';' +
+                           str(startPos + count - 1) + ';' + objType)
                 flattenedWorld.append(tmp)
             objType = None
             startPos = 0

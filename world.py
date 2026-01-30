@@ -1,6 +1,6 @@
-from GameObjects import *
-from Actors import *
-from Camera import *
+from game_objects import *
+from actors import *
+from camera import *
 
 
 class World:
@@ -108,13 +108,17 @@ class World:
                     self.addGameObject(Plateforme(
                         int(tmp[1]), int(tmp[2]), (int(tmp[3]), int(tmp[4]))))
                 elif tmp[0] == 'g':
-                    self.addGameObject(Ground(int(tmp[1]), int(tmp[2]), (int(tmp[3]), int(tmp[4]))))
+                    self.addGameObject(Ground(int(tmp[1]), int(
+                        tmp[2]), (int(tmp[3]), int(tmp[4]))))
                 elif tmp[0] == 'P':
-                    self.addActor(Player(float(tmp[1]), float(tmp[2]), (int(tmp[3]), int(tmp[4])) * self.tileSize))
+                    self.addActor(Player(float(tmp[1]), float(
+                        tmp[2]), (int(tmp[3]), int(tmp[4])) * self.tileSize))
                 elif tmp[0] == 'b':
-                    self.addBox(Box(int(tmp[1]), int(tmp[2]), (int(tmp[3]), int(tmp[4]))))
+                    self.addBox(Box(int(tmp[1]), int(
+                        tmp[2]), (int(tmp[3]), int(tmp[4]))))
                 elif tmp[0] == 'E':
-                    self.addActor(Enemy(float(tmp[1]), float(tmp[2]), (int(tmp[3]), int(tmp[4])) * self.tileSize))
+                    self.addActor(Enemy(float(tmp[1]), float(
+                        tmp[2]), (int(tmp[3]), int(tmp[4])) * self.tileSize))
 
     def switchDebugMode(self):
         self.debugMode = not self.debugMode
@@ -137,7 +141,8 @@ class World:
             return ((obj.pos - self.worldOrigin) * np.array((1, -1)),  # pos
                     ((obj.initialValues[0], obj.ymin - self.worldOrigin[1]),  # rect part 1
                      ((obj.initialValues[1] - obj.initialValues[0]),
-                      -(self.worldOrigin[1] - obj.ymin + (obj.ymax - self.worldOrigin[1])))))  # rect part 2
+                      # rect part 2
+                      -(self.worldOrigin[1] - obj.ymin + (obj.ymax - self.worldOrigin[1])))))
 
     def draw(self, screen):
         """
@@ -165,7 +170,8 @@ class World:
 
     def update(self, keys, dt, sizeRatio):
 
-        cameraOffsetLeft = self.camera.xmin - (self.camera.initialValues[0] * self.tileSize[0])
+        cameraOffsetLeft = self.camera.xmin - \
+            (self.camera.initialValues[0] * self.tileSize[0])
         for go in self.gameObjects:
             if ((go.pos[0] + go.width) * self.tileSize[0] > cameraOffsetLeft and
                     go.pos[0] < cameraOffsetLeft + self.canvasSize[0]):
@@ -183,7 +189,8 @@ class World:
             if actor.life < 1:
                 self.actors.remove(actor)
 
-            actor.update(dt, sizeRatio, self.gameObjects, self.tileSize, self.scale)
+            actor.update(dt, sizeRatio, self.gameObjects,
+                         self.tileSize, self.scale)
 
         self.camera.checkPlayerPos(self.player)
 

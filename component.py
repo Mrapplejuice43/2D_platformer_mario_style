@@ -20,7 +20,8 @@ class Component:
         self.parent = parent
 
     def throwEvent(self):
-        pygame.event.post(pygame.event.Event(self.eventType, {'id': self.eventId}))
+        pygame.event.post(pygame.event.Event(
+            self.eventType, {'id': self.eventId}))
 
     def resize(self, oldWidth, width, oldHeight, height):
         self.width = width * self.width // oldWidth
@@ -51,7 +52,8 @@ class Component:
 
     def addChild(self, component):
         if isinstance(component, Component):
-            component.pos = [self.pos[0] + component.pos[0], self.pos[1] + component.pos[1]]
+            component.pos = [self.pos[0] + component.pos[0],
+                             self.pos[1] + component.pos[1]]
             self.children.append(component)
 
 
@@ -89,17 +91,20 @@ class Text(Component):
     def __init__(self, parent, size=25, color=(255, 255, 255), pos=(0, 0), centered=True, **kwargs):
         super().__init__(parent)
 
-        self.content = pygame.font.SysFont("Consolas", size).render(kwargs['content'], False, color)
+        self.content = pygame.font.SysFont("Consolas", size).render(
+            kwargs['content'], False, color)
         self.width = self.content.get_width()
         self.height = self.content.get_height()
         self.pos = pos
 
         if centered:
-            self.pos = [(self.parent.width - self.width) // 2, (self.parent.height - self.height) // 2]
+            self.pos = [(self.parent.width - self.width) // 2,
+                        (self.parent.height - self.height) // 2]
 
 
 class Background(Component):
     def __init__(self, parent, width, height, color=(0, 0, 0, 150)):
         super().__init__(parent, width, height, pos=[0, 0])
-        if len(color) == 4: self.color = color
+        if len(color) == 4:
+            self.color = color
         self.content = pygame.Surface((width, height)).convert_alpha()

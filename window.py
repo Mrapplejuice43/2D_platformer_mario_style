@@ -1,7 +1,13 @@
-from Game import *
-from World import *
-from Overlay import *
-from Editor import *
+from editor import Editor
+from game import Game
+from overlay import Menu
+import pygame
+from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, KEYDOWN, K_ESCAPE, K_TAB, K_g, K_F10, K_r, K_t, K_y, QUIT, VIDEORESIZE, SWSURFACE, DOUBLEBUF, RESIZABLE
+from camera import CAMERA_TRIGGER
+from component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
+from overlay import PLAY_ID, QUIT_ID, BACK_ID, EDITOR_ID, MAIN_MENU_ID, SELECT_GROUND, SELECT_BLOCK, SELECT_PLAYER, RESET_WORLD, QUIT_ID, SAVE_ID, CHANGE_MODE
+from editor import PLACE_MODE, REMOVE_MODE, GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
+
 import numpy as np
 
 GAME_STATE = 0
@@ -25,14 +31,17 @@ class Window:
         self.shouldClose = False
         self.debugMode = False
         self.isGridDrawn = False
-        self.tileSize = np.array((self.width // 48, self.height // 27)) * self.scale
+        self.tileSize = np.array(
+            (self.width // 48, self.height // 27)) * self.scale
 
-        self.screen = pygame.display.set_mode((self.width, self.height), SWSURFACE | DOUBLEBUF | RESIZABLE)
+        self.screen = pygame.display.set_mode(
+            (self.width, self.height))
 
         self.state = MAIN_MENU
         self.game = Game((self.width, self.height), self.tileSize, self.scale)
-        self.editor = Editor((self.width, self.height), self.tileSize, self.scale)
-        self.game.readWorld(r"Worlds\worldTest.wd")
+        self.editor = Editor((self.width, self.height),
+                             self.tileSize, self.scale)
+        self.game.readWorld(r"worlds/worldTest.wd")
 
         self.menu = Menu(self.width, self.height)
 
@@ -84,7 +93,8 @@ class Window:
                                               SWSURFACE | DOUBLEBUF | RESIZABLE)
         self.width = width
         self.height = height
-        self.tileSize = np.array((self.width // 48, self.height // 27)) * self.scale
+        self.tileSize = np.array(
+            (self.width // 48, self.height // 27)) * self.scale
         self.sizeRatio = np.array((self.width, self.height)) / BASESIZE
         if self.state == MAIN_MENU:
             self.menu.resize(width, height)
@@ -109,7 +119,8 @@ class Window:
                     self.resize(event.__dict__['w'], event.__dict__['h'])
 
                 if event.type == CAMERA_TRIGGER:
-                    self.game.moveCamera(event.__dict__["dx"], event.__dict__["dy"])
+                    self.game.moveCamera(
+                        event.__dict__["dx"], event.__dict__["dy"])
 
                 if event.type == MENU_EVENT:
                     id = event.__dict__['id']
@@ -173,7 +184,8 @@ class Window:
 
                     if id == EDITOR_ID:
                         self.state = EDITOR_MODE
-                        self.editor = Editor((self.width, self.height), self.tileSize, self.scale)
+                        self.editor = Editor(
+                            (self.width, self.height), self.tileSize, self.scale)
 
             elif self.state == EDITOR_MODE:
                 if event.type == KEYDOWN:
@@ -249,7 +261,8 @@ class Window:
             elif self.state == GAME_STATE:
                 if self.fps > 0:
                     if not self.game.pause:
-                        self.game.update(self.getKeys(), self.clock.get_time() / 1000, self.sizeRatio)
+                        self.game.update(
+                            self.getKeys(), self.clock.get_time() / 1000, self.sizeRatio)
                         self.drawGame()
 
                     else:
@@ -270,8 +283,6 @@ class Window:
 
 if __name__ == "__main__":
     pygame.init()
-    pygame.font.init()
-    pygame.mixer.init()
     w, h = BASESIZE
     win = Window(w, h)
     win.run()

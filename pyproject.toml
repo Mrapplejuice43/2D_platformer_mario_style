@@ -1,0 +1,13 @@
+[project]
+name = "2d-platformer-mario-style"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.4.1",
+    "pygame>=2.6.1",
+]
+
+[dependency-groups]
+dev = ["invoke>=2.2.1", "ruff>=0.14.14"]

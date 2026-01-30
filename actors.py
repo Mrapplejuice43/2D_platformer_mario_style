@@ -1,7 +1,9 @@
+from constants import BALKANY_PATH, POLICE_PATH
 import numpy as np
-from pygame.locals import *
-from GameObjects import Box
+from game_objects import Box
 import pygame
+from pygame.locals import K_LEFT, K_RIGHT, K_DOWN, K_UP, K_r, K_KP0, K_SPACE
+
 
 
 def speedFunc(maxSpeed, t, timeNeededToReachMax):
@@ -35,15 +37,18 @@ class Actor:
         self.width = args[0]
         self.height = args[1]
         self.fullHeight = args[1]
-        self.color = np.array((30, 30, 200))  # not useful except for rendering an actor as a square of a certain color
+        # not useful except for rendering an actor as a square of a certain color
+        self.color = np.array((30, 30, 200))
         self.weight = 1
         self.jumpingStrength = 10
         self.direction = [None, None]
         self.onScreen = True
         self.life = 1
 
-        self.speed = np.array((0.0, 0.0), dtype=np.float)  # pixels/s used to store what speed the player should have
-        self.movementSpeed = np.array((0.0, 0.0), dtype=np.float)  # used to move the player
+        # pixels/s used to store what speed the player should have
+        self.speed = np.array((0.0, 0.0), dtype=float)
+        self.movementSpeed = np.array(
+            (0.0, 0.0), dtype=float)  # used to move the player
         self.pos = np.array(args[2])
         self.startPos = tuple(args[2])
 
@@ -62,7 +67,8 @@ class Actor:
         self.fallbackSpeed = 6
         self.secondsToMaxHorizontalSpeed = .5
         self.secondsToStop = .1
-        self.recoveryTime = .5  # Time where the player is uncontrollable after upon taking damage (in seconds)
+        # Time where the player is uncontrollable after upon taking damage (in seconds)
+        self.recoveryTime = .5
 
         self.secondsMovingLeft = 0
         self.secondsMovingRight = 0
@@ -121,13 +127,15 @@ class Actor:
             self.jumping = True
             self.onGround = False
             if speed == None:
-                self.speed[1] += (jumpingSpeed(self.jumpingStrength, self.weight)) * sizeRatio[1] * gameScale
+                self.speed[1] += (jumpingSpeed(self.jumpingStrength,
+                                  self.weight)) * sizeRatio[1] * gameScale
             else:
-                self.speed[1] += (jumpingSpeed(speed, self.weight)) * sizeRatio[1] * gameScale
+                self.speed[1] += (jumpingSpeed(speed, self.weight)
+                                  ) * sizeRatio[1] * gameScale
 
     def reset(self):
         self.pos = np.array(self.startPos)
-        self.speed = np.array((0.0, 0.0), dtype=np.float)
+        self.speed = np.array((0.0, 0.0), dtype=float)
         self.direction = [None, None]
 
         self.onGround = False
@@ -155,10 +163,13 @@ class Actor:
             self.height = 3 * self.height / 2
 
     def draw(self, screen, coords, width, height):
-        screen.blit(pygame.transform.scale(self.sprite, (int(width), int(height))), coords)
+        screen.blit(pygame.transform.scale(
+            self.sprite, (int(width), int(height))), coords)
         if self.debugMode:
-            pygame.draw.rect(screen, (200, 0, 0), pygame.Rect(coords, (width, height)), 2)
-            pygame.draw.ellipse(screen, (0, 0, 0), pygame.Rect(coords - (3, 3 - height), (6, 6)), 0)
+            pygame.draw.rect(screen, (200, 0, 0), pygame.Rect(
+                coords, (width, height)), 2)
+            pygame.draw.ellipse(screen, (0, 0, 0), pygame.Rect(
+                coords - (3, 3 - height), (6, 6)), 0)
             screen.blit(pygame.font.SysFont("Consolas", 12).render(
                 "{0}, {1}".format(self.pos, self.speed), False, (0, 0, 0)), coords - (50, 20))
 
@@ -199,46 +210,56 @@ class Actor:
                         and actor.pos[0] + tmpSpeed[0] + actor.width * tileSize[0] > gameObj.pos[0] * tileSize[0]):
                     yCollide = True
 
-                    above = actor.pos[1] >= (gameObj.pos[1] + gameObj.height) * tileSize[1]
-                    below = actor.pos[1] + actor.height * tileSize[1] <= gameObj.pos[1] * tileSize[1]
+                    above = actor.pos[1] >= (
+                        gameObj.pos[1] + gameObj.height) * tileSize[1]
+                    below = actor.pos[1] + actor.height * \
+                        tileSize[1] <= gameObj.pos[1] * tileSize[1]
 
                     if below:
                         if actor.crouched:
-                            canUncrouch = actor.pos[1] + actor.fullHeight * tileSize[1] <= gameObj.pos[1] * tileSize[1]
+                            canUncrouch = actor.pos[1] + actor.fullHeight * \
+                                tileSize[1] <= gameObj.pos[1] * tileSize[1]
 
                 # If they overlap on both x and y axis they collide
                 if xCollide and yCollide:
 
                     # Look where the player is from the object
-                    above = actor.pos[1] >= (gameObj.pos[1] + gameObj.height) * tileSize[1]
-                    below = actor.pos[1] + actor.height * tileSize[1] <= gameObj.pos[1] * tileSize[1]
-                    right = actor.pos[0] >= (gameObj.pos[0] + gameObj.width) * tileSize[0]
-                    left = actor.pos[0] + actor.width * tileSize[0] <= gameObj.pos[0] * tileSize[0]
+                    above = actor.pos[1] >= (
+                        gameObj.pos[1] + gameObj.height) * tileSize[1]
+                    below = actor.pos[1] + actor.height * \
+                        tileSize[1] <= gameObj.pos[1] * tileSize[1]
+                    right = actor.pos[0] >= (
+                        gameObj.pos[0] + gameObj.width) * tileSize[0]
+                    left = actor.pos[0] + actor.width * \
+                        tileSize[0] <= gameObj.pos[0] * tileSize[0]
 
                     # if the player is on the left it means that he was moving to the right so
                     # we put him against the object and removes his speed while changing his canMoveRight state
                     if above:
                         onGround = True
-                        tmpPos[1] = (gameObj.pos[1] + gameObj.height) * tileSize[1]
+                        tmpPos[1] = (gameObj.pos[1] +
+                                     gameObj.height) * tileSize[1]
                         self.movementSpeed[1] = 0
                     elif below:
                         canMoveUp = False
                         jumping = False
-                        tmpPos[1] = (gameObj.pos[1] - actor.height) * tileSize[1]
+                        tmpPos[1] = (gameObj.pos[1] -
+                                     actor.height) * tileSize[1]
                         self.movementSpeed[1] = 0
                         self.speed[1] /= 1.5
 
                         if isinstance(actor, Player) and isinstance(gameObj, Box) and self.jumping:
                             gameObj.activate()
 
-
                     elif left:
                         canMoveRight = False
-                        tmpPos[0] = (gameObj.pos[0] - actor.width) * tileSize[0]
+                        tmpPos[0] = (gameObj.pos[0] -
+                                     actor.width) * tileSize[0]
                         self.movementSpeed[0] = 0
                     elif right:
                         canMoveLeft = False
-                        tmpPos[0] = (gameObj.pos[0] + gameObj.width) * tileSize[0]
+                        tmpPos[0] = (gameObj.pos[0] +
+                                     gameObj.width) * tileSize[0]
                         self.movementSpeed[0] = 0
 
         self.onGround = onGround
@@ -274,7 +295,8 @@ class Actor:
 
                     # Above
                     if testedActor.pos[1] >= actor.pos[1] + actor.height * tileSize[1]:
-                        testedActor.pos[1] = actor.pos[1] + actor.height * tileSize[1]
+                        testedActor.pos[1] = actor.pos[1] + \
+                            actor.height * tileSize[1]
 
                         self.secondsFalling = 0
 
@@ -300,17 +322,20 @@ class Actor:
 
                         # Below
                         if testedActor.pos[1] + testedActor.height * tileSize[1] <= actor.pos[1]:
-                            testedActor.pos[1] = actor.pos[1] - testedActor.height * tileSize[1]
+                            testedActor.pos[1] = actor.pos[1] - \
+                                testedActor.height * tileSize[1]
                             testedActor.speed[1] = -testedActor.fallbackSpeed
 
                         # Left
                         elif testedActor.pos[0] + testedActor.width * tileSize[0] <= actor.pos[0]:
-                            testedActor.pos[0] = actor.pos[0] - testedActor.width * tileSize[0]
+                            testedActor.pos[0] = actor.pos[0] - \
+                                testedActor.width * tileSize[0]
                             testedActor.speed[1] = testedActor.fallbackSpeed
 
                         # Right
                         elif testedActor.pos[0] >= actor.pos[0] + actor.width * tileSize[0]:
-                            testedActor.pos[0] = actor.pos[0] + actor.width * tileSize[0]
+                            testedActor.pos[0] = actor.pos[0] + \
+                                actor.width * tileSize[0]
                             testedActor.speed[1] = testedActor.fallbackSpeed
 
                         # Simulate fallback from taking damages
@@ -328,7 +353,7 @@ class Actor:
 class Player(Actor):
     def __init__(self, *args, **kwargs):
         super().__init__(args[0], args[1], args[2])
-        self.sprite = pygame.image.load(r'assets\balkany.png')
+        self.sprite = pygame.image.load(BALKANY_PATH)
         self.onScreen = True
         self.life = 1
 
@@ -353,10 +378,12 @@ class Player(Actor):
                 self.direction[0] = None
 
             if self.direction[0] == K_LEFT:
-                self.speed[0] = slowSpeed(self.peakSpeed, self.secondsStopping, self.secondsToStop) * sizeRatio[0]
+                self.speed[0] = slowSpeed(
+                    self.peakSpeed, self.secondsStopping, self.secondsToStop) * sizeRatio[0]
                 self.secondsStopping += dt
             elif self.direction[0] == K_RIGHT:
-                self.speed[0] = slowSpeed(self.peakSpeed, self.secondsStopping, self.secondsToStop) * sizeRatio[0]
+                self.speed[0] = slowSpeed(
+                    self.peakSpeed, self.secondsStopping, self.secondsToStop) * sizeRatio[0]
                 self.secondsStopping += dt
 
         if not self.onGround:
@@ -383,7 +410,7 @@ class Player(Actor):
         else:
             self.direction[1] = K_DOWN
 
-        self.movementSpeed = np.array(self.speed.tolist(), dtype=np.float)
+        self.movementSpeed = np.array(self.speed.tolist(), dtype=float)
         self.checkPositionCollisions(gameObjects, tileSize)
 
         if self.controllable:
@@ -395,7 +422,8 @@ class Player(Actor):
 class Enemy(Actor):
     def __init__(self, *args, **kwargs):
         super().__init__(args[0], args[1], args[2])
-        self.sprite = pygame.image.load(r'assets\police.jpg')
+        self.sprite = pygame.image.load(POLICE_PATH)
+
         self.life = 1
 
     def update(self, dt, sizeRatio, gameObjects, tileSize, gameScale):
@@ -405,6 +433,6 @@ class Enemy(Actor):
         else:
             self.speed[1] = 0
 
-        self.movementSpeed = np.array(self.speed.tolist(), dtype=np.float)
+        self.movementSpeed = np.array(self.speed.tolist(), dtype=float)
         self.checkPositionCollisions(gameObjects, tileSize)
         self.pos += np.int32(np.round(self.movementSpeed))
