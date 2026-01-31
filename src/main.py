@@ -4,7 +4,7 @@ from _old.window import Window, BASESIZE
 def main() -> None:
     pg.init()
     pg.font.init()
-    # pg.mixer.init() # no sound in devcontainer :(
+    pg.mixer.init()
     w, h = BASESIZE
     win = Window(w, h)
     win.run()

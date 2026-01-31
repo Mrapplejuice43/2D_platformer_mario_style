@@ -1,9 +1,7 @@
 {
   "name": "Python devcontainer with uv",
   "dockerFile": "Dockerfile",
-  "runArgs": [
-    "--device=/dev/snd"
-  ],
+  "runArgs": ["--device=/dev/snd",  "--device=/dev/usb"],
   "customizations": {
     "vscode": {
       "settings": { "terminal.integrated.shell.linux": "/bin/bash" },
@@ -28,9 +26,16 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
-    "source=/dev/snd,target=/dev/snd,type=bind"
+    "source=/etc/pulse,target=/etc/pulse,type=bind",
+    "source=/mnt/wslg/,target=/mnt/wslg,type=bind"
   ],
   "postCreateCommand": "./.devcontainer/setup.sh",
-  "containerEnv": { "DISPLAY": "${host.docker.internal:0}" },
-  "remoteEnv": { "DISPLAY": "${host.docker.internal:0}" }
+  "containerEnv": {
+    "DISPLAY": "${host.docker.internal:0}",
+    "PULSE_SERVER": "${localEnv:PULSE_SERVER}"
+  },
+  "remoteEnv": {
+    "DISPLAY": "${host.docker.internal:0}",
+    "PULSE_SERVER": "${localEnv:PULSE_SERVER}"
+  }
 }
