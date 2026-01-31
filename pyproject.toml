@@ -10,8 +10,16 @@ dependencies = ["numpy>=2.4.1", "pygame>=2.6.1"]
 dev = ["invoke>=2.2.1", "ruff>=0.14.14"]
 
 [tool.ruff]
+src = ["src", "tests"]
+include = ["*.py", "*.json", "*pyproject.toml"]
 line-length = 144
+fix = true
+indent-width = 4
 
 [tool.ruff.format]
+indent-style = "space"
+line-ending = "lf"
 quote-style = "double"
-indent-style = "tab"
+
+[tool.ruff.lint.flake8-import-conventions.aliases]
+pygame = "pg"
