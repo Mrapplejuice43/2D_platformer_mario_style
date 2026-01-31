@@ -1,27 +1,36 @@
 {
-    "name": "Python devcontainer with uv",
-    "dockerFile": "Dockerfile",
-    "customizations": {
-        "vscode": {
-            "settings": {"terminal.integrated.shell.linux": "/bin/bash"},
-            "extensions": [
-                "ms-python.vscode-pylance",
-                "ms-python.vscode-python-envs",
-                "ms-python.python",
-                "ms-python.debugpy",
-                "charliermarsh.ruff",
-                "oderwat.indent-rainbow",
-                "SonarSource.sonarlint-vscode",
-                "tamasfe.even-better-toml",
-            ],
-        }
-    },
-    "features": {"ghcr.io/devcontainers/features/node:1": {"version": "latest"}},
-    "mounts": [
-        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
-    ],
-    "containerEnv": {"DISPLAY": "${host.docker.internal:0}"},
-    "remoteEnv": {"DISPLAY": "${host.docker.internal:0}"},
-    "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh",
+  "name": "Python devcontainer with uv",
+  "dockerFile": "Dockerfile",
+  "runArgs": [
+    "--device=/dev/snd"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": { "terminal.integrated.shell.linux": "/bin/bash" },
+      "extensions": [
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "oderwat.indent-rainbow",
+        "SonarSource.sonarlint-vscode",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "latest",
+      "pnpmVersion": "none"
+    }
+  },
+  "privileged": true,
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+    "source=/dev/snd,target=/dev/snd,type=bind"
+  ],
+  "postCreateCommand": "./.devcontainer/setup.sh",
+  "containerEnv": { "DISPLAY": "${host.docker.internal:0}" },
+  "remoteEnv": { "DISPLAY": "${host.docker.internal:0}" }
 }
