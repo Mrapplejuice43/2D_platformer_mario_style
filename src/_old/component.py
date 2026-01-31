@@ -67,16 +67,18 @@ class Button(Component):
             pygame.transform.scale(pygame.image.load(content), (width, height)),
         )
 
-        self.eventId = event_id
+        self.event_id = event_id
 
         if "eventType" in kwargs:
-            self.eventType = kwargs["eventType"]
+            self.event_type = kwargs["eventType"]
         else:
-            self.eventType = MENU_EVENT
+            self.event_type = MENU_EVENT
 
         if "posType" in kwargs:
             if kwargs["posType"] == "percentFromCenter":
-                self.pos = np.array((parent.width, parent.height)) * pos // 100 - np.array((self.width, self.height)) // 2
+                self.pos = (
+                    np.array((parent.width, parent.height)) * pos // 100 - np.array((self.width, self.height)) // 2
+                )
             elif kwargs["posType"] == "percent":
                 self.pos = np.array((parent.width, parent.height)) * pos // 100
         else:

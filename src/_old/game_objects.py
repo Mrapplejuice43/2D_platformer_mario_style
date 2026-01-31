@@ -1,4 +1,7 @@
-from constants import (
+import pygame
+import numpy as np
+
+from .constants import (
     BLOCK_PATH,
     BOTH_SIDE_TOP_GROUND_PATH,
     BROKEN_BLOCK_PATH,
@@ -7,8 +10,6 @@ from constants import (
     SIDE_TOP_GROUND_RIGHT_PATH,
     TOP_GROUND_PATH,
 )
-import numpy as np
-import pygame
 
 
 class GameObject:
@@ -78,7 +79,9 @@ class Ground(GameObject):
 
                 im_array = np.concatenate((im_array, tmp))
 
-            self.sprite = pygame.image.fromstring(im_array.tobytes(), ((self.width) * 27, (self.height + 1) * 27), "RGB")
+            self.sprite = pygame.image.fromstring(
+                im_array.tobytes(), ((self.width) * 27, (self.height + 1) * 27), "RGB"
+            )
             self.sprite.set_colorkey((255, 255, 255))
 
         elif self.width == 1:
@@ -86,7 +89,9 @@ class Ground(GameObject):
             for j in range(self.height):
                 im_array = np.concatenate((im_array, surfarrays[1]))
 
-            self.sprite = pygame.image.fromstring(im_array.tobytes(), ((self.width) * 27, (self.height + 1) * 27), "RGB")
+            self.sprite = pygame.image.fromstring(
+                im_array.tobytes(), ((self.width) * 27, (self.height + 1) * 27), "RGB"
+            )
             self.sprite.set_colorkey((255, 255, 255))
 
         else:

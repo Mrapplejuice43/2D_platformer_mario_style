@@ -1,6 +1,6 @@
 # Events ids used inside pygame events not to get limited
-from component import EDITOR_EVENT, Background, Button, Component, Image, Text
-from constants import BALKANY_PATH, BLOCK_PATH, TEST_BUTTON_PATH, TOP_GROUND_PATH
+from .component import EDITOR_EVENT, Background, Button, Component, Image, Text
+from .constants import BALKANY_PATH, BLOCK_PATH, TEST_BUTTON_PATH, TOP_GROUND_PATH
 
 
 PLAY_ID = 1
@@ -34,8 +34,12 @@ class Overlay:
 
     def check_click_pos(self, pos):
         for cp in self.components:
-            if not isinstance(cp, Background) and cp.pos[0] < pos[0] < cp.pos[0] + cp.width and cp.pos[1] < pos[1] < cp.pos[1] + cp.height:
-                cp.throwEvent()
+            if (
+                not isinstance(cp, Background)
+                and cp.pos[0] < pos[0] < cp.pos[0] + cp.width
+                and cp.pos[1] < pos[1] < cp.pos[1] + cp.height
+            ):
+                cp.throw_event()
                 return True
 
     def resize(self, width, height):
@@ -97,9 +101,9 @@ class Menu(Overlay):
                 posType="percentFromCenter",
             ),
         )
-        self.components[0].addChild(Text(parent=self.components[0], content="Play", centered=True))
-        self.components[1].addChild(Text(parent=self.components[1], content="Editor", centered=True))
-        self.components[2].addChild(Text(parent=self.components[2], content="Quit", centered=True))
+        self.components[0].add_child(Text(parent=self.components[0], content="Play", centered=True))
+        self.components[1].add_child(Text(parent=self.components[1], content="Editor", centered=True))
+        self.components[2].add_child(Text(parent=self.components[2], content="Quit", centered=True))
 
 
 class PauseMenu(Overlay):
@@ -136,9 +140,9 @@ class PauseMenu(Overlay):
             ),
         )
 
-        self.components[1].addChild(Text(parent=self.components[1], content="Continue", centered=True))
-        self.components[2].addChild(Text(parent=self.components[2], content="Restart", centered=True))
-        self.components[3].addChild(Text(parent=self.components[3], content="Return to Menu", centered=True))
+        self.components[1].add_child(Text(parent=self.components[1], content="Continue", centered=True))
+        self.components[2].add_child(Text(parent=self.components[2], content="Restart", centered=True))
+        self.components[3].add_child(Text(parent=self.components[3], content="Return to Menu", centered=True))
 
 
 class EditorMenu(Overlay):
@@ -186,10 +190,10 @@ class EditorMenu(Overlay):
             ),
         )
 
-        self.components[0].addChild(Image(self.components[0], 50, 50, [0, 0], TOP_GROUND_PATH))
-        self.components[1].addChild(Image(self.components[1], 50, 50, [0, 0], BLOCK_PATH))
-        self.components[2].addChild(Image(self.components[2], 50, 50, [0, 0], BALKANY_PATH))
-        self.components[3].addChild(Text(parent=self.components[3], content="Switch Mode", centered=True, size=14))
+        self.components[0].add_child(Image(self.components[0], 50, 50, [0, 0], TOP_GROUND_PATH))
+        self.components[1].add_child(Image(self.components[1], 50, 50, [0, 0], BLOCK_PATH))
+        self.components[2].add_child(Image(self.components[2], 50, 50, [0, 0], BALKANY_PATH))
+        self.components[3].add_child(Text(parent=self.components[3], content="Switch Mode", centered=True, size=14))
 
 
 class EditorPauseMenu(Overlay):
@@ -226,6 +230,6 @@ class EditorPauseMenu(Overlay):
             ),
         )
 
-        self.components[1].addChild(Text(parent=self.components[1], content="Continue", centered=True))
-        self.components[2].addChild(Text(parent=self.components[2], content="Save World", centered=True))
-        self.components[3].addChild(Text(parent=self.components[3], content="Return to Menu", centered=True))
+        self.components[1].add_child(Text(parent=self.components[1], content="Continue", centered=True))
+        self.components[2].add_child(Text(parent=self.components[2], content="Save World", centered=True))
+        self.components[3].add_child(Text(parent=self.components[3], content="Return to Menu", centered=True))

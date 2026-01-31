@@ -1,8 +1,9 @@
-from constants import BALKANY_PATH, POLICE_PATH
-import numpy as np
-from game_objects import Box
 import pygame
 from pygame.locals import K_LEFT, K_RIGHT, K_DOWN, K_UP, K_r, K_KP0, K_SPACE
+import numpy as np
+
+from .constants import BALKANY_PATH, POLICE_PATH
+from .game_objects import Box
 
 
 def speed_func(max_speed, delta_time, time_needed_to_reach_max):
@@ -134,7 +135,9 @@ class Actor:
                 self.peak_speed = self.speed[0]
 
     def fall(self, dt, size_ratio, game_scale):
-        self.speed[1] += (falling_speed(-self.max_vertical_speed * self.weight, self.seconds_falling)) * size_ratio[1] * game_scale
+        self.speed[1] += (
+            (falling_speed(-self.max_vertical_speed * self.weight, self.seconds_falling)) * size_ratio[1] * game_scale
+        )
         self.seconds_falling += dt
 
     def jump(self, size_ratio, game_scale, speed=None):
@@ -217,7 +220,7 @@ class Actor:
         tmp_pos = actor.pos
 
         for game_obj in game_objects:
-            if game_obj.onScreen:
+            if game_obj.on_screen:
                 x_collide, y_collide = False, False
 
                 # Check if player and obj overlap on the x direction
@@ -239,7 +242,9 @@ class Actor:
 
                     if below:
                         if actor.crouched:
-                            can_uncrouch = actor.pos[1] + actor.full_height * tile_size[1] <= game_obj.pos[1] * tile_size[1]
+                            can_uncrouch = (
+                                actor.pos[1] + actor.full_height * tile_size[1] <= game_obj.pos[1] * tile_size[1]
+                            )
 
                 # If they overlap on both x and y axis they collide
                 if x_collide and y_collide:
@@ -286,20 +291,24 @@ class Actor:
         tested_actor = self
 
         for actor in actors:
-            if actor.onScreen:
+            if actor.on_screen:
                 x_collide, y_collide = False, False
 
                 # Check if player and obj overlap on the x direction
                 if (
-                    tested_actor.pos[1] + tested_actor.speed[1] <= actor.pos[1] + actor.speed[1] + (actor.height * tile_size[1])
-                    and tested_actor.pos[1] + tested_actor.speed[1] + tested_actor.height * tile_size[1] >= actor.pos[1] + actor.speed[1]
+                    tested_actor.pos[1] + tested_actor.speed[1]
+                    <= actor.pos[1] + actor.speed[1] + (actor.height * tile_size[1])
+                    and tested_actor.pos[1] + tested_actor.speed[1] + tested_actor.height * tile_size[1]
+                    >= actor.pos[1] + actor.speed[1]
                 ):
                     x_collide = True
 
                 # Check if player and obj overlap on the y direction
                 if (
-                    tested_actor.pos[0] + tested_actor.speed[0] <= actor.pos[0] + actor.speed[0] + (actor.width * tile_size[0])
-                    and tested_actor.pos[0] + tested_actor.speed[0] + tested_actor.width * tile_size[0] >= actor.pos[0] + actor.speed[0]
+                    tested_actor.pos[0] + tested_actor.speed[0]
+                    <= actor.pos[0] + actor.speed[0] + (actor.width * tile_size[0])
+                    and tested_actor.pos[0] + tested_actor.speed[0] + tested_actor.width * tile_size[0]
+                    >= actor.pos[0] + actor.speed[0]
                 ):
                     y_collide = True
 
@@ -362,19 +371,19 @@ class Player(Actor):
     def __init__(self, *args, **kwargs):
         super().__init__(args[0], args[1], args[2])
         self.sprite = pygame.image.load(BALKANY_PATH)
-        self.onScreen = True
+        self.on_screen = True
         self.life = 1
 
     def update(self, keys, dt, size_ratio, game_objects, actors, tile_size, game_scale):
         if not self.controllable:
-            self.secondsRecovering += dt
+            self.seconds_recovering += dt
 
-        if self.secondsRecovering > self.recovery_time:
+        if self.seconds_recovering > self.recovery_time:
             self.controllable = True
-            self.secondsRecovering = 0.0
+            self.seconds_recovering = 0.0
 
         if (keys[K_RIGHT] or keys[K_LEFT]) and self.controllable:
-            self.secondsStopping = 0
+            self.seconds_stopping = 0
             self.move(keys, dt, size_ratio, game_scale)
         else:
             self.secondsMovingRight = 0
@@ -382,12 +391,12 @@ class Player(Actor):
 
             if abs(self.speed[0]) < 0.01 and self.direction[0]:
                 self.speed[0] = 0
-                self.secondsStopping = 0
+                self.seconds_stopping = 0
                 self.direction[0] = None
 
             if self.direction[0] == K_LEFT or self.direction[0] == K_RIGHT:
-                self.speed[0] = slow_speed(self.peak_speed, self.secondsStopping, self.seconds_to_stop) * size_ratio[0]
-                self.secondsStopping += dt
+                self.speed[0] = slow_speed(self.peak_speed, self.seconds_stopping, self.seconds_to_stop) * size_ratio[0]
+                self.seconds_stopping += dt
 
         if not self.on_ground:
             self.fall(dt, size_ratio, game_scale)
@@ -395,7 +404,7 @@ class Player(Actor):
         if self.on_ground:
             self.jumping = False
             self.speed[1] = 0
-            self.secondsFalling = 0
+            self.seconds_falling = 0
 
         if (keys[K_SPACE] or keys[K_KP0]) and self.can_move_up and self.controllable:
             self.jump(size_ratio, game_scale)
@@ -413,13 +422,13 @@ class Player(Actor):
         else:
             self.direction[1] = K_DOWN
 
-        self.movementSpeed = np.array(self.speed.tolist(), dtype=float)
+        self.movement_speed = np.array(self.speed.tolist(), dtype=float)
         self.check_position_collisions(game_objects, tile_size)
 
         if self.controllable:
             self.actor_collision(actors, tile_size)
 
-        self.pos += np.int32(np.round(self.movementSpeed))
+        self.pos += np.int32(np.round(self.movement_speed))
 
 
 class Enemy(Actor):
@@ -435,6 +444,6 @@ class Enemy(Actor):
         else:
             self.speed[1] = 0
 
-        self.movementSpeed = np.array(self.speed.tolist(), dtype=float)
+        self.movement_speed = np.array(self.speed.tolist(), dtype=float)
         self.check_position_collisions(game_objects, tile_size)
-        self.pos += np.int32(np.round(self.movementSpeed))
+        self.pos += np.int32(np.round(self.movement_speed))

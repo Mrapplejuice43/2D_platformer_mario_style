@@ -1,10 +1,10 @@
-from overlay import EditorPauseMenu, EditorMenu
 import os
 import re
 import numpy as np
 import pygame
 
-from world import World
+from .overlay import EditorPauseMenu, EditorMenu
+from .world import World
 
 # Editing modes
 PLACE_MODE = 0

@@ -1,5 +1,13 @@
-def main():
-    print("Hello from 2d-platformer-mario-style!")
+import pygame as pg
+from _old.window import Window, BASESIZE
+
+def main() -> None:
+    pg.init()
+    pg.font.init()
+    # pg.mixer.init() # no sound in devcontainer :(
+    w, h = BASESIZE
+    win = Window(w, h)
+    win.run()
 
 
 if __name__ == "__main__":

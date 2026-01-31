@@ -1,7 +1,13 @@
-from editor import Editor
-from game import Game
-from overlay import Menu
-import pygame
+from logging import Logger
+import os
+import pygame as pg
+import numpy as np
+
+from .constants import WORLDS_PATH
+
+from .editor import Editor
+from .game import Game
+from .overlay import Menu
 from pygame.locals import (
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -20,9 +26,9 @@ from pygame.locals import (
     DOUBLEBUF,
     RESIZABLE,
 )
-from camera import CAMERA_TRIGGER
-from component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
-from overlay import (
+from .camera import CAMERA_TRIGGER
+from .component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
+from .overlay import (
     PLAY_ID,
     EDITOR_ID,
     MAIN_MENU_ID,
@@ -34,15 +40,16 @@ from overlay import (
     SAVE_ID,
     CHANGE_MODE,
 )
-from editor import GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
+from .editor import GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
 
-import numpy as np
 
 GAME_STATE = 0
 MAIN_MENU = 1
 EDITOR_MODE = 2
 BASESIZE = (1280, 720)
 
+_logger = Logger("WindowLogger")
+_logger.setLevel("INFO")
 
 class Window:
     def __init__(self, width, height):
@@ -51,22 +58,22 @@ class Window:
         self.size_ratio = np.array((self.width, self.height)) / BASESIZE
         self.scale = 1
 
-        self.clock = pygame.time.Clock()
+        self.clock = pg.time.Clock()
         self.target_fps = 60
         self.fps = self.clock.get_fps()
-        self.time = pygame.time.get_ticks()
+        self.time = pg.time.get_ticks()
 
         self.should_close = False
         self.debug_mode = False
         self.is_grid_drawn = False
         self.tile_size = np.array((self.width // 48, self.height // 27)) * self.scale
 
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = pg.display.set_mode((self.width, self.height))
 
         self.state = MAIN_MENU
         self.game = Game((self.width, self.height), self.tile_size, self.scale)
         self.editor = Editor((self.width, self.height), self.tile_size, self.scale)
-        self.game.read_world(r"worlds/worldTest.wd")
+        self.game.read_world(os.path.join(WORLDS_PATH, "worldTest.wd"))
 
         self.menu = Menu(self.width, self.height)
 
@@ -82,7 +89,7 @@ class Window:
 
         if self.debug_mode:
             self.screen.blit(
-                pygame.font.SysFont("Consolas", 14, bold=True).render("fps : {0}".format(self.fps), False, (0, 0, 0)),
+                pg.font.SysFont("Consolas", 14, bold=True).render("fps : {0}".format(self.fps), False, (0, 0, 0)),
                 (0, 20),
             )
 
@@ -104,7 +111,7 @@ class Window:
         """
         :return: list of keys pressed
         """
-        return pygame.key.get_pressed()
+        return pg.key.get_pressed()
 
     def update(self):
         """
@@ -112,10 +119,10 @@ class Window:
         :return:
         """
         self.fps = self.clock.get_fps()
-        self.time = pygame.time.get_ticks()
+        self.time = pg.time.get_ticks()
 
     def resize(self, width, height):
-        self.screen = pygame.display.set_mode((width, height), SWSURFACE | DOUBLEBUF | RESIZABLE)
+        self.screen = pg.display.set_mode((width, height), SWSURFACE | DOUBLEBUF | RESIZABLE)
         self.width = width
         self.height = height
         self.tile_size = np.array((self.width // 48, self.height // 27)) * self.scale
@@ -133,7 +140,8 @@ class Window:
         Retrieve events from pygame and process them to interact with the program and make the overlays work
         :return:
         """
-        for event in pygame.event.get():
+        for event in pg.event.get():
+            _logger.info(event)
             if event.type == QUIT:
                 self.should_close = True
 
@@ -295,11 +303,11 @@ class Window:
                     self.editor.draw_pause_overlay(self.screen)
 
             self.handle_events()
-            pygame.display.flip()
+            pg.display.flip()
 
 
 if __name__ == "__main__":
-    pygame.init()
+    pg.init()
     w, h = BASESIZE
     win = Window(w, h)
     win.run()

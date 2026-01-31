@@ -1,8 +1,8 @@
 import numpy as np
 
-from actors import Actor, Enemy, Player
-from camera import Camera
-from game_objects import Box, GameObject, Ground, Plateforme
+from .actors import Actor, Enemy, Player
+from .camera import Camera
+from .game_objects import Box, GameObject, Ground, Plateforme
 
 
 class World:
@@ -146,7 +146,7 @@ class World:
     def switch_debug_mode(self):
         self.debug_mode = not self.debug_mode
         for obj in self.objects:
-            obj.debugMode = not obj.debugMode
+            obj.debug_mode = not obj.debug_mode
 
     def calculate_drawing_coordinates(self, obj):
         """
@@ -215,19 +215,21 @@ class World:
     def update(self, keys, dt, size_ratio):
         camera_offset_left = self.camera.xmin - (self.camera.initialValues[0] * self.tile_size[0])
         for go in self.game_objects:
-            if (go.pos[0] + go.width) * self.tile_size[0] > camera_offset_left and go.pos[0] < camera_offset_left + self.canvas_size[0]:
-                go.onScreen = True
+            if (go.pos[0] + go.width) * self.tile_size[0] > camera_offset_left and go.pos[
+                0
+            ] < camera_offset_left + self.canvas_size[0]:
+                go.on_screen = True
             else:
-                go.onScreen = False
+                go.on_screen = False
 
         for actor in self.actors:
             if (
                 actor.pos[0] + (actor.width * self.tile_size[0]) > camera_offset_left
                 and actor.pos[0] < camera_offset_left + self.canvas_size[0]
             ):
-                actor.onScreen = True
+                actor.on_screen = True
             else:
-                actor.onScreen = False
+                actor.on_screen = False
 
             if actor.life < 1:
                 self.actors.remove(actor)

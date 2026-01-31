@@ -8,7 +8,10 @@ class SpriteAnimation:
         self.nb_frames = nb_frames
         self.sprite = []
         self.size = size
-        self.sprite = [(self.image.subsurface(pygame.Rect(self.size[0] * i, 0, self.size[0], self.size[1]))) for i in range(self.nb_frames)]
+        self.sprite = [
+            (self.image.subsurface(pygame.Rect(self.size[0] * i, 0, self.size[0], self.size[1])))
+            for i in range(self.nb_frames)
+        ]
 
         self.current_frame = 0
 
