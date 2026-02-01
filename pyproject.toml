@@ -11,7 +11,7 @@ dev = ["invoke>=2.2.1", "ruff>=0.14.14"]
 
 [tool.ruff]
 src = ["src", "tests"]
-include = ["*.py", "*.json", "*pyproject.toml"]
+include = ["*.py", "*pyproject.toml"]
 line-length = 120
 fix = true
 indent-width = 4

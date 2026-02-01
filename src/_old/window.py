@@ -51,6 +51,7 @@ BASESIZE = (1280, 720)
 _logger = Logger("WindowLogger")
 _logger.setLevel("INFO")
 
+
 class Window:
     def __init__(self, width, height):
         self.width = width
