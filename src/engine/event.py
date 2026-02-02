@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 import logging
 from typing import Callable
+from pygame import event as ev
 
 
 @dataclass
@@ -11,12 +12,24 @@ class EventCallback:
     def __call__(self, *args, event, window, **kwargs) -> None:
         self.callback(event, window)
 
+    def __str__(self) -> str:
+        return f"EventCallback[{self.event_name}]"
+    
+    def __repr__(self) -> str:
+        return f"EventCallback[{self.event_name}]"
+
 
 @dataclass
 class EventRegistery:
     __logger = logging.getLogger(__name__)
     event_callbacks: dict[int, dict[str, EventCallback]] = field(default_factory=dict)
 
+    def __str__(self) -> str:
+        return f"EventRegistery[{len(self.event_callbacks)} events]"
+    
+    def __repr__(self) -> str:
+        return f"EventRegistery[{len(self.event_callbacks)} events]"
+    
     def get_events_from_type(self, event_type: int) -> dict[str, EventCallback] | None:
         return self.event_callbacks.get(event_type)
 
@@ -49,13 +62,13 @@ class EventRegistery:
         if event_callbacks_map := self.event_callbacks.get(event_type):
             if event_callback.event_name in event_callbacks_map:
                 if replace_if_event_name_exists:
-                    self.__logger.debug(f"Event {event_callback.event_name} from {event_type} replaced")
+                    self.__logger.debug(f"Event {event_callback.event_name} from {ev.event_name(event_type)} replaced")
                     event_callbacks_map.update({event_callback.event_name: event_callback})
                 else:
-                    self.__logger.warning(f"Event {event_callback.event_name} from {event_type} ignored")
+                    self.__logger.warning(f"Event {event_callback.event_name} from {ev.event_name(event_type)} ignored")
             else:
-                self.__logger.debug(f"Event {event_callback.event_name} added to {event_type} registery")
+                self.__logger.debug(f"Event {event_callback.event_name} added to {ev.event_name(event_type)} registery")
                 event_callbacks_map.update({event_callback.event_name: event_callback})
         else:
-            self.__logger.debug(f"Event {event_type} added to registery with event {event_callback.event_name}")
+            self.__logger.debug(f"Event {ev.event_name(event_type)} added to registery with event {event_callback.event_name}")
             self.event_callbacks.update({event_type: {event_callback.event_name: event_callback}})

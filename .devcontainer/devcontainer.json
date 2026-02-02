@@ -1,7 +1,7 @@
 {
   "name": "Python devcontainer with uv",
   "dockerFile": "Dockerfile",
-  "runArgs": ["--device=/dev/snd",  "--device=/dev/usb"],
+  "runArgs": ["--device=/dev/snd"],
   "customizations": {
     "vscode": {
       "settings": { "terminal.integrated.shell.linux": "/bin/bash" },

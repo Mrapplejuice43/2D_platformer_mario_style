@@ -6,13 +6,13 @@ from engine.window import Window
 
 
 def main() -> None:
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="[%(levelname)s] [%(threadName)s] - %(asctime)s - %(name)s:%(funcName)s:%(lineno)s - %(message)s")
     pg.init()
     pg.font.init()
     pg.mixer.init()
-    config = Config(window_size=(1280, 720))
-    win = Window()
-    win.config = config
+    logging.getLogger(__name__).debug(pg.joystick.get_count())
+    config = Config()
+    win = Window().set_config(config)
     win.run()
     pg.quit()
 

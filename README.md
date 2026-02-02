@@ -1,9 +1,13 @@
 # 2D_platformer_mario_style
- 
-2D platformer made with only numpy and pygame
 
-### Run Window.py as the main
+2D platformer made with pygame
 
+## Dev infos
+
+Joysicks are not recognized by WSL as devices. USB ports can be forwarded to dev container but SDL requires to have
+native USB inputs in /dev/inputs/:eventX: so it can be recognized as a valid joystick
+
+## OLD -------------------------------------
 
 ## Keys to play the game :
 
@@ -31,7 +35,6 @@
 - AI to make enemies moving
 - An ending block (Just a gameObject that toggles a variable)
 
-
 ## To modify certain things in the code :
 
 - To change the physics in the game, all variables are in the Actor.py file
@@ -55,10 +58,10 @@ When we launch the program, we first create the instances of everything we need 
 
 - The gameObject class hold variables like position, width, height. There are subclasses per object types to differenciate them.
 
-- The overlay and component classes are used to generate the menus. There are subclasses of component to differenciate them and make them act properly : 
+- The overlay and component classes are used to generate the menus. There are subclasses of component to differenciate them and make them act properly :
   - The buttons throw events when the user clicks on them caught by the main loop
   - Other components are here to display things like text, images, a background color
-  
+
   We can put an infinity of components inside a component to make things like images in a button used in the editor overlay.
-  
+
 - The camera class makes the world move with the player. We can see where the camera is by using F10 while playing.
