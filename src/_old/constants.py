@@ -1,6 +1,5 @@
 import os
 
-
 TEST_BUTTON_PATH = os.path.join(os.curdir, "src", "assets", "testButton.png")
 TOP_GROUND_PATH = os.path.join(os.curdir, "src", "assets", "topGround.png")
 LOW_GROUND_PATH = os.path.join(os.curdir, "src", "assets", "lowGround.png")

@@ -3,11 +3,11 @@ import os
 import pygame as pg
 import numpy as np
 
-from .constants import WORLDS_PATH
+from constants import WORLDS_PATH
 
-from .editor import Editor
-from .game import Game
-from .overlay import Menu
+from editor import Editor
+from game import Game
+from overlay import Menu
 from pygame.locals import (
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
@@ -26,9 +26,9 @@ from pygame.locals import (
     DOUBLEBUF,
     RESIZABLE,
 )
-from .camera import CAMERA_TRIGGER
-from .component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
-from .overlay import (
+from camera import CAMERA_TRIGGER
+from component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
+from overlay import (
     PLAY_ID,
     EDITOR_ID,
     MAIN_MENU_ID,
@@ -40,7 +40,7 @@ from .overlay import (
     SAVE_ID,
     CHANGE_MODE,
 )
-from .editor import GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
+from editor import GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
 
 
 GAME_STATE = 0

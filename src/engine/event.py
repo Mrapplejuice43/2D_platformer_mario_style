@@ -1,6 +1,7 @@
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
 from typing import Callable
+
 from pygame import event as ev
 
 
@@ -14,7 +15,7 @@ class EventCallback:
 
     def __str__(self) -> str:
         return f"EventCallback[{self.event_name}]"
-    
+
     def __repr__(self) -> str:
         return f"EventCallback[{self.event_name}]"
 
@@ -26,10 +27,10 @@ class EventRegistery:
 
     def __str__(self) -> str:
         return f"EventRegistery[{len(self.event_callbacks)} events]"
-    
+
     def __repr__(self) -> str:
         return f"EventRegistery[{len(self.event_callbacks)} events]"
-    
+
     def get_events_from_type(self, event_type: int) -> dict[str, EventCallback] | None:
         return self.event_callbacks.get(event_type)
 
@@ -70,5 +71,7 @@ class EventRegistery:
                 self.__logger.debug(f"Event {event_callback.event_name} added to {ev.event_name(event_type)} registery")
                 event_callbacks_map.update({event_callback.event_name: event_callback})
         else:
-            self.__logger.debug(f"Event {ev.event_name(event_type)} added to registery with event {event_callback.event_name}")
+            self.__logger.debug(
+                f"Event {ev.event_name(event_type)} added to registery with event {event_callback.event_name}"
+            )
             self.event_callbacks.update({event_type: {event_callback.event_name: event_callback}})

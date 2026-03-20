@@ -1,8 +1,7 @@
 import numpy as np
-
-from .camera import Camera
-from .overlay import PauseMenu
-from .world import World
+from camera import Camera
+from overlay import PauseMenu
+from world import World
 
 
 class Game:

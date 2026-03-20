@@ -1,7 +1,6 @@
-import pygame
 import numpy as np
-
-from .constants import (
+import pygame
+from constants import (
     BLOCK_PATH,
     BOTH_SIDE_TOP_GROUND_PATH,
     BROKEN_BLOCK_PATH,

@@ -1,6 +1,6 @@
+import numpy as np
 import pygame
 from pygame.locals import NOEVENT, USEREVENT
-import numpy as np
 
 # Event type used by pygame
 GAME_EVENT = USEREVENT + 1

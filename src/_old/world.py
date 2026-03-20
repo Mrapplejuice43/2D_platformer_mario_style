@@ -1,8 +1,7 @@
 import numpy as np
-
-from .actors import Actor, Enemy, Player
-from .camera import Camera
-from .game_objects import Box, GameObject, Ground, Plateforme
+from actors import Actor, Enemy, Player
+from camera import Camera
+from game_objects import Box, GameObject, Ground, Plateforme
 
 
 class World:

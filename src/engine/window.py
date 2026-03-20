@@ -1,8 +1,8 @@
 import json
 import logging
 from typing import Any, Self
-import pygame as pg
 
+import pygame as pg
 
 from .config import Config
 from .event import EventCallback, EventRegistery
@@ -33,13 +33,17 @@ class Window:
 
     def _configure_window(self) -> None:
         self._screen = pg.display.set_mode(
-            size=(self._config.window.window_size), flags=self._config.window.flags, display=0, vsync=0, depth=0
+            size=self._config.window.window_size,
+            flags=self._config.window.flags,
+            display=0,
+            vsync=self._config.window.vsync,
+            depth=0,
         )
         pg.display.set_caption(self._config.window.caption)
 
         def window_close(event: pg.event.Event, window: "Window") -> None:
             window._should_close = True
-        
+
         def window_close_keyboard(event: pg.event.Event, window: "Window") -> None:
             if (key := event.dict.get("key")) and (key == pg.K_ESCAPE):
                 window._should_close = True
@@ -47,9 +51,7 @@ class Window:
         def toggle_recording(event: pg.event.Event, window: "Window") -> None:
             if (key := event.dict.get("key")) and (key == pg.K_r):
                 window._record_events = not window._record_events
-                self.__logger.debug(f"{"Started" if window._record_events else "Stopped"} recording events")
-
-            
+                self.__logger.debug(f"{'Started' if window._record_events else 'Stopped'} recording events")
 
         self.register_event(pg.QUIT, EventCallback("set_should_close_to_true", window_close))
         self.register_event(pg.KEYDOWN, EventCallback("set_should_close_to_true", window_close_keyboard))
@@ -72,10 +74,10 @@ class Window:
             self._recorded_events.update({event_name: event.dict})
 
     def _update_screen(self) -> None:
-        pass
+        self._screen.fill((255, 255, 50))
 
     def _update_time(self) -> None:
-        pass
+        self._clock.tick(self._config.window.target_fps.value)
 
     def run(self) -> None:
         self._configure_window()

@@ -1,7 +1,6 @@
 # Events ids used inside pygame events not to get limited
-from .component import EDITOR_EVENT, Background, Button, Component, Image, Text
-from .constants import BALKANY_PATH, BLOCK_PATH, TEST_BUTTON_PATH, TOP_GROUND_PATH
-
+from component import EDITOR_EVENT, Background, Button, Component, Image, Text
+from constants import BALKANY_PATH, BLOCK_PATH, TEST_BUTTON_PATH, TOP_GROUND_PATH
 
 PLAY_ID = 1
 OPTION_ID = 2

@@ -1,9 +1,8 @@
-import pygame
-from pygame.locals import K_LEFT, K_RIGHT, K_DOWN, K_UP, K_r, K_KP0, K_SPACE
 import numpy as np
-
-from .constants import BALKANY_PATH, POLICE_PATH
-from .game_objects import Box
+import pygame
+from constants import BALKANY_PATH, POLICE_PATH
+from game_objects import Box
+from pygame.locals import K_DOWN, K_KP0, K_LEFT, K_RIGHT, K_SPACE, K_UP, K_r
 
 
 def speed_func(max_speed, delta_time, time_needed_to_reach_max):
