@@ -1,47 +1,45 @@
-from logging import Logger
 import os
-import pygame as pg
+from logging import Logger
+
 import numpy as np
-
+import pygame as pg
+from camera import CAMERA_TRIGGER
+from component import EDITOR_EVENT, GAME_EVENT, MENU_EVENT
 from constants import WORLDS_PATH
-
-from editor import Editor
-from game import Game
-from overlay import Menu
+from editor import BLOCK_TYPE, GROUND_TYPE, PLAYER_TYPE, Editor
+from overlay import (
+    CHANGE_MODE,
+    EDITOR_ID,
+    MAIN_MENU_ID,
+    PLAY_ID,
+    QUIT_ID,
+    RESET_WORLD,
+    SAVE_ID,
+    SELECT_BLOCK,
+    SELECT_GROUND,
+    SELECT_PLAYER,
+    Menu,
+)
 from pygame.locals import (
+    DOUBLEBUF,
+    K_ESCAPE,
+    K_F10,
+    K_TAB,
+    KEYDOWN,
     MOUSEBUTTONDOWN,
     MOUSEBUTTONUP,
     MOUSEMOTION,
-    KEYDOWN,
-    K_ESCAPE,
-    K_TAB,
+    QUIT,
+    RESIZABLE,
+    SWSURFACE,
+    VIDEORESIZE,
     K_g,
-    K_F10,
     K_r,
     K_t,
     K_y,
-    QUIT,
-    VIDEORESIZE,
-    SWSURFACE,
-    DOUBLEBUF,
-    RESIZABLE,
 )
-from camera import CAMERA_TRIGGER
-from component import MENU_EVENT, GAME_EVENT, EDITOR_EVENT
-from overlay import (
-    PLAY_ID,
-    EDITOR_ID,
-    MAIN_MENU_ID,
-    SELECT_GROUND,
-    SELECT_BLOCK,
-    SELECT_PLAYER,
-    RESET_WORLD,
-    QUIT_ID,
-    SAVE_ID,
-    CHANGE_MODE,
-)
-from editor import GROUND_TYPE, BLOCK_TYPE, PLAYER_TYPE
 
+from game import Game
 
 GAME_STATE = 0
 MAIN_MENU = 1

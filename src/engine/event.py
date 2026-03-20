@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Any, Callable, Sequence
 
 from pygame import event as ev
 
@@ -8,9 +8,9 @@ from pygame import event as ev
 @dataclass
 class EventCallback:
     event_name: str
-    callback: Callable
+    callback: Callable[[ev.Event, Any], None]
 
-    def __call__(self, *args, event, window, **kwargs) -> None:
+    def __call__(self, *args: Sequence[Any], event: ev.Event, window: Any, **kwargs: Sequence[Any]) -> None:
         self.callback(event, window)
 
     def __str__(self) -> str:
@@ -23,7 +23,7 @@ class EventCallback:
 @dataclass
 class EventRegistery:
     __logger = logging.getLogger(__name__)
-    event_callbacks: dict[int, dict[str, EventCallback]] = field(default_factory=dict)
+    event_callbacks: dict[int, dict[str, EventCallback]] = field(default_factory=dict)  # type: ignore
 
     def __str__(self) -> str:
         return f"EventRegistery[{len(self.event_callbacks)} events]"

@@ -4,6 +4,8 @@ from typing import Any, Self
 
 import pygame as pg
 
+from engine.scene.base import BaseScene
+
 from .config import Config
 from .event import EventCallback, EventRegistery
 
@@ -20,6 +22,8 @@ class Window:
 
     _record_events = False
     _recorded_events: dict[str, dict[str, Any]] = {}
+
+    active_scene: BaseScene | None = None
 
     def register_event(self, event_type: int, callback: EventCallback, replace_if_exists: bool = True) -> None:
         self.__logger.debug(f"Registering event {event_type} with callback {callback}")
@@ -74,7 +78,14 @@ class Window:
             self._recorded_events.update({event_name: event.dict})
 
     def _update_screen(self) -> None:
-        self._screen.fill((255, 255, 50))
+        if self.active_scene:
+            render = self.active_scene.render()
+            self._screen.blit(
+                source=render.source, dest=render.dest, area=render.area, special_flags=render.special_flags
+            )
+            return
+
+        self._screen.fill(pg.Color(50, 50, 50))
 
     def _update_time(self) -> None:
         self._clock.tick(self._config.window.target_fps.value)
