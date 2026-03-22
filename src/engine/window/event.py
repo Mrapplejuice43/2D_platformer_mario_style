@@ -10,8 +10,8 @@ class EventCallback:
     event_name: str
     callback: Callable[[ev.Event, Any], None]
 
-    def __call__(self, *args: Sequence[Any], event: ev.Event, window: Any, **kwargs: Sequence[Any]) -> None:
-        self.callback(event, window)
+    def __call__(self, *args: Sequence[Any], event: ev.Event, target: Any, **kwargs: Sequence[Any]) -> None:
+        self.callback(event, target)
 
     def __str__(self) -> str:
         return f"EventCallback[{self.event_name}]"

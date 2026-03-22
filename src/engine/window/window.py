@@ -1,39 +1,27 @@
 import json
 import logging
-from typing import Any, Self
+from typing import Self
 
 import pygame as pg
 
-from engine.scene.base import BaseScene
+from engine.commons.window import WindowType
 
 from .config import Config
 from .event import EventCallback, EventRegistery
 
 
-class Window:
+class Window(WindowType):
     __logger = logging.getLogger(__name__)
 
     _clock = pg.time.Clock()
-    _screen: pg.Surface
 
-    _config: Config
     _registered_events: EventRegistery = EventRegistery()
-    _should_close: bool = False
+    _should_close = False
 
     _record_events = False
-    _recorded_events: dict[str, dict[str, Any]] = {}
+    _recorded_events = {}
 
-    active_scene: BaseScene | None = None
-
-    def register_event(self, event_type: int, callback: EventCallback, replace_if_exists: bool = True) -> None:
-        self.__logger.debug(f"Registering event {event_type} with callback {callback}")
-        self._registered_events.register_event_callback(
-            event_type=event_type, event_callback=callback, replace_if_event_name_exists=replace_if_exists
-        )
-
-    def set_config(self, config: Config) -> Self:
-        self._config = config
-        return self
+    active_scene = None
 
     def _configure_window(self) -> None:
         self._screen = pg.display.set_mode(
@@ -45,14 +33,14 @@ class Window:
         )
         pg.display.set_caption(self._config.window.caption)
 
-        def window_close(event: pg.event.Event, window: "Window") -> None:
+        def window_close(event: pg.event.Event, window: WindowType) -> None:
             window._should_close = True
 
-        def window_close_keyboard(event: pg.event.Event, window: "Window") -> None:
+        def window_close_keyboard(event: pg.event.Event, window: WindowType) -> None:
             if (key := event.dict.get("key")) and (key == pg.K_ESCAPE):
                 window._should_close = True
 
-        def toggle_recording(event: pg.event.Event, window: "Window") -> None:
+        def toggle_recording(event: pg.event.Event, window: WindowType) -> None:
             if (key := event.dict.get("key")) and (key == pg.K_r):
                 window._record_events = not window._record_events
                 self.__logger.debug(f"{'Started' if window._record_events else 'Stopped'} recording events")
@@ -90,6 +78,12 @@ class Window:
     def _update_time(self) -> None:
         self._clock.tick(self._config.window.target_fps.value)
 
+    def register_event(self, event_type: int, callback: EventCallback, replace_if_exists: bool = True) -> None:
+        self.__logger.debug(f"Registering event {event_type} with callback {callback}")
+        self._registered_events.register_event_callback(
+            event_type=event_type, event_callback=callback, replace_if_event_name_exists=replace_if_exists
+        )
+
     def run(self) -> None:
         self._configure_window()
         while not self._should_close:
@@ -101,3 +95,7 @@ class Window:
         if self._recorded_events:
             with open("event_records.txt", "+w") as f:
                 json.dump(self._recorded_events, f)
+
+    def set_config(self, config: Config) -> Self:
+        self._config = config
+        return self

@@ -3,8 +3,8 @@ import sys
 
 import pygame as pg
 
-from engine.config import Config
-from engine.window import Window
+from engine.window.config import Config
+from engine.window.window import Window
 
 logger = logging.getLogger(__name__)
 
